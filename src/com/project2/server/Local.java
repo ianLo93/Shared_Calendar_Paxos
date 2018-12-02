@@ -6,8 +6,8 @@ import java.util.*;
 public class Local {
 
     public static int k = 0; // next entry
-//    public static ArrayList<Event> schedule = new ArrayList<>();
-    public static ArrayList<Event> log = new ArrayList<>();
+    private static ArrayList<Appointment> schedule = new ArrayList<>();
+    private static ArrayList<Event> log = new ArrayList<>();
     public static int wait = -1;
     private String maxPrepare;
     private String accNum;
@@ -46,23 +46,16 @@ public class Local {
     }
 
     // Helper functions
-    public void myView(){
-        ArrayList<Appointment> meetings = constructSchedule();
-        ArrayList<Appointment> myMeeting = relaventAppointment(meetings);
-        Collections.sort(myMeeting, Appointment.timeComparator);
-        for (Appointment m : myMeeting) System.out.println(m);
-    }
-
     public void view(){
-        ArrayList<Appointment> meetings = constructSchedule();
-        Collections.sort(meetings, Appointment.timeComparator);
-        for (Appointment m : meetings) System.out.println(m);
+        Collections.sort(schedule, Appointment.timeComparator);
+        for (Appointment a : schedule) System.out.println(a);
     }
 
-<<<<<<< HEAD
     public void myView() {
-        for (Event e: schedule) System.out.println(e.getAppointment());
-=======
+        ArrayList<Appointment> meetings;
+
+    }
+
     public void viewLog(){}
 
     public void add(){}
@@ -70,8 +63,6 @@ public class Local {
     public void remove(){}
 
     private void checkMemberAvailability(){}
-
-    private ArrayList<Appointment> relaventAppointment(ArrayList<Appointment> schedule){}
 
     private ArrayList<Appointment> constructSchedule(){
         // TODO: readCopy
@@ -100,7 +91,6 @@ public class Local {
             System.out.println("parse_time failed");
             return -1;
         }
->>>>>>> 38fd116505fef81eaec113e573656ddfbb1cbfff
     }
 
 
