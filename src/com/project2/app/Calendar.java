@@ -66,11 +66,11 @@ public class Calendar {
 //                if (!server.getStatus()) break;
                 command = sc.nextLine();
                 if (command.equals("view")) {
-                    local.print_calendar();
+                    local.view();
                 } else if (command.equals("myview")) {
-                    local.print_calendar();
+                    local.myView();
                 } else if (command.equals("log")) {
-                    // TODO: print log
+                    local.viewLog();
                 } else {
                     Event proposal = client.parse_command(command);
                     if (proposal != null) {

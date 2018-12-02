@@ -54,6 +54,6 @@ public class Local {
     }
 
     public void myView() {
-        
+        for (Event e: schedule) System.out.println(e.getAppointment());
     }
 }
