@@ -74,8 +74,14 @@ public class Client {
         }
     }
 
-    public String prepareM() {
-        return "ab";
+    private String prepareM() {
+        return "aa";
+    }
+
+    public void start_paxos(Event proposal) {
+        String m = prepareM();
+        Local.wait = 1;
+        bcast(0, m, proposal);
     }
 
     public void bcast(int op, String m_, Event proposal) {

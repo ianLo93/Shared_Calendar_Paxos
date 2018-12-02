@@ -31,6 +31,15 @@ public class Event implements Serializable {
     public String[] getParticipants() { return participants; }
     public int getK() { return k; }
 
+    // Print Functions
+    public String getAppointment() {
+        StringBuilder m = new StringBuilder(name+" "+day+" "+start+" "+end+" ");
+        int i=0;
+        for (; i<participants.length-1; i++) m.append(participants[i]+",");
+        m.append(participants[i]);
+        return m.toString();
+    }
+
     @Override
     public String toString(){
         StringBuilder m = new StringBuilder(op + " " +name + " " + day+ " " + start + " " + end + " ");

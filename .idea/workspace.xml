@@ -2,6 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58d12a37-1ca3-4b0d-8906-f510539021d1" name="Default Changelist" comment="``">
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/src/com/project2/app/Calendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/app/Calendar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/project2/client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/project2/client/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/client/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/project2/server/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Event.java" afterDir="false" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
       <change beforePath="$PROJECT_DIR$/src/com/project2/server/Local.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Local.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -32,13 +39,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="32" />
-          <entry key="java" value="5801" />
+          <entry key="java" value="6600" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="5801" />
+          <entry key="JAVA" value="6600" />
           <entry key="PLAIN_TEXT" value="33" />
         </counts>
       </usages-collector>
@@ -71,8 +78,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/app/Calendar.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="-82">
               <caret line="54" column="41" lean-forward="true" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
+=======
+            <state relative-caret-position="395">
+              <caret line="70" column="43" selection-start-line="70" selection-start-column="43" selection-end-line="70" selection-end-column="43" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -83,10 +95,21 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/client/Sender.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="396">
               <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
+=======
+            <state relative-caret-position="563">
+              <caret line="83" column="30" lean-forward="true" selection-start-line="83" selection-start-column="30" selection-end-line="83" selection-end-column="30" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#274#275#0" expanded="true" />
+                <element signature="e#311#312#0" expanded="true" />
+                <element signature="e#2925#2926#0" expanded="true" />
+                <element signature="e#2952#2953#0" expanded="true" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
               </folding>
             </state>
           </provider>
@@ -116,20 +139,33 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/server/Server.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="456">
               <caret line="62" column="41" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+=======
+            <state relative-caret-position="861">
+              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="288">
               <caret line="53" column="5" lean-forward="true" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
+=======
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/project2/server/Server.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="58" column="30" lean-forward="true" selection-start-line="58" selection-start-column="30" selection-end-line="58" selection-end-column="30" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -149,11 +185,19 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/server/test.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="72">
               <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+=======
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="80">
+              <caret line="11" column="26" lean-forward="true" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
             </state>
           </provider>
         </entry>
@@ -182,17 +226,29 @@
       <list>
         <option value="$PROJECT_DIR$/src/Calendar.java" />
         <option value="$PROJECT_DIR$/src/com/project2/client/PMessage.java" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/src/com/project2/server/Event.java" />
         <option value="$PROJECT_DIR$/src/com/project2/client/Message.java" />
+=======
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
         <option value="$PROJECT_DIR$/src/com/project2/server/Acceptor.java" />
         <option value="$PROJECT_DIR$/src/com/project2/server/test.java" />
         <option value="$PROJECT_DIR$/src/com/project2/client/Proposer.java" />
         <option value="$PROJECT_DIR$/src/com/project2/server/Server.java" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/src/com/project2/client/Client.java" />
         <option value="$PROJECT_DIR$/src/com/project2/client/Sender.java" />
         <option value="$PROJECT_DIR$/src/com/project2/app/Calendar.java" />
         <option value="$PROJECT_DIR$/src/com/project2/server/Appointment.java" />
         <option value="$PROJECT_DIR$/src/com/project2/server/Local.java" />
+=======
+        <option value="$PROJECT_DIR$/src/com/project2/client/Sender.java" />
+        <option value="$PROJECT_DIR$/src/com/project2/server/Event.java" />
+        <option value="$PROJECT_DIR$/src/com/project2/server/Local.java" />
+        <option value="$PROJECT_DIR$/src/com/project2/client/Message.java" />
+        <option value="$PROJECT_DIR$/src/com/project2/client/Client.java" />
+        <option value="$PROJECT_DIR$/src/com/project2/app/Calendar.java" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
       </list>
     </option>
   </component>
@@ -263,7 +319,11 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+<<<<<<< HEAD
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543790471151" />
+=======
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543790209432" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -332,12 +392,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1543300489440</updated>
-      <workItem from="1543300494920" duration="34089000" />
+      <workItem from="1543300494920" duration="36596000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="36599000" />
+=======
+    <option name="totallyTimeSpent" value="36596000" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1388" height="877" extended-state="0" />
@@ -356,7 +420,7 @@
       <window_info anchor="bottom" id="Database Changes" order="3" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.32897863" />
-      <window_info anchor="bottom" id="Run" order="6" visible="true" weight="0.32897863" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.32897863" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.4" />
       <window_info anchor="bottom" id="Messages" order="8" weight="0.32897863" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
@@ -399,6 +463,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/src/com/project2/client/Sender.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
@@ -410,6 +475,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/client/Client.java">
+=======
+    <entry file="file://$PROJECT_DIR$/src/com/project2/server/test.java">
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
           <caret line="80" column="20" lean-forward="true" selection-start-line="80" selection-start-column="20" selection-end-line="80" selection-end-column="20" />
@@ -419,6 +487,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/test.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
@@ -430,6 +499,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-82">
           <caret line="54" column="41" lean-forward="true" selection-start-line="54" selection-start-column="41" selection-end-line="54" selection-end-column="41" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/com/project2/client/Sender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -438,8 +513,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/Server.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="456">
           <caret line="62" column="41" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="41" />
+=======
+        <state relative-caret-position="374">
+          <caret line="58" column="30" lean-forward="true" selection-start-line="58" selection-start-column="30" selection-end-line="58" selection-end-column="30" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -447,16 +527,54 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/Event.java">
+<<<<<<< HEAD
+=======
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="861">
+          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/project2/client/Message.java">
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="468">
           <caret line="26" column="44" lean-forward="true" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/Appointment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="33" column="45" selection-start-line="33" selection-start-column="45" selection-end-line="33" selection-end-column="45" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/com/project2/client/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="563">
+          <caret line="83" column="30" lean-forward="true" selection-start-line="83" selection-start-column="30" selection-end-line="83" selection-end-column="30" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#274#275#0" expanded="true" />
+            <element signature="e#311#312#0" expanded="true" />
+            <element signature="e#2925#2926#0" expanded="true" />
+            <element signature="e#2952#2953#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="53" column="5" lean-forward="true" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/com/project2/app/Calendar.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="70" column="43" selection-start-line="70" selection-start-column="43" selection-end-line="70" selection-end-column="43" />
+>>>>>>> 379c0b0e5b968c5a5c2cfa8a9d24358045cf5d8b
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -465,11 +583,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="53" column="5" lean-forward="true" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="80">
+          <caret line="11" column="26" lean-forward="true" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
         </state>
       </provider>
     </entry>
