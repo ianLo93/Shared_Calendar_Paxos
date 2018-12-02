@@ -1,16 +1,19 @@
-package com.project1.app;
+package com.project2.app;
+
 import java.util.*;
 import java.io.*;
-import java.util.concurrent.Semaphore;
+//import java.util.concurrent.Semaphore;
 
-import com.project2.client.Proposer;
-//import com.project2.client.Message;
-import com.project2.server.Acceptor;
+import com.project2.client.Client;
+import com.project2.client.Message;
+import com.project2.client.Sender;
+import com.project2.server.Server;
+import com.project2.server.Event;
 
 public class Calendar {
 
-    public static HashMap<String, int[]> phonebook;
-    public static Semaphore mutex = new Semaphore(1);
+    public static HashMap<String, Integer> phonebook = new HashMap<>();
+//    public static Semaphore mutex = new Semaphore(1);
 
     public static void readFile(String path) {
         try {
@@ -19,15 +22,13 @@ public class Calendar {
             String line;
 
             int index = 0;
-            phonebook = new HashMap<>();
             while ((line = buffer.readLine()) != null) {
                 line = line.trim();
                 String[] socket_info = line.split(" ");
                 String siteid = socket_info[0];
                 int port = Integer.parseInt(socket_info[1]);
-                phonebook.put(siteid, new int[]{index, port});
+                phonebook.put(siteid, port);
                 index++;
-
             }
         } catch (IOException i) {
             System.out.println(i);
@@ -38,7 +39,9 @@ public class Calendar {
     public static void main(String args[]) {
 
         // Read system site infos and make phonebook
-        readFile("knownhosts_udp.txt");
+//        readFile("knownhosts_udp.txt");
+
+        phonebook.put("localhost", 8000);
 
         if(args.length != 1 || !Calendar.phonebook.containsKey(args[0])){
             System.out.println("ERROR: Invalid Arguments");
@@ -47,37 +50,44 @@ public class Calendar {
         }
 
         // Get port number (args[0] stands for site ID)
-        int port = Calendar.phonebook.get(args[0])[1];
+        int port = Calendar.phonebook.get(args[0]);
 
-        Acceptor acceptor = new Acceptor();
-        Proposer proposer = new Proposer();
+        Server server = new Server(port);
+        server.setDaemon(true);
+        server.start();
+        Client client = new Client(args[0]);
 
-        // Continuously get keyboard commands
-//        String welcome = "\nProgram started! You can now start to share your calendar schedule.\n" +
-//                "You can view/edit/share you schedules by using \"% schedule\", \"% cancel\",\n" +
-//                "\"% view\",\"% myview\", and \"% log\" commands.\n\nPlease enter your command below:";
-//        System.out.println(welcome);
         Scanner sc = new Scanner(System.in);
         String command;
         while (true) {
             try {
-                mutex.acquire();
-                if (!server.getStatus()) break;
+//                mutex.acquire();
+//                if (!server.getStatus()) break;
                 command = sc.nextLine();
-                Message msg = client.parse_command(command);
-                if (msg == null) {
-                    mutex.release();
-                    continue;
+                if (command.equals("view")) {
+                    // TODO: print calendar
+                } else if (command.equals("myview")) {
+                    // TODO: print my calendar
+                } else if (command.equals("log")) {
+                    // TODO: print log
+                } else {
+                    Event proposal = client.parse_command(command);
+//                    if (proposal != null) {
+//                        // TODO: fill holes, do paxos
+//
+//                    }
+                    String m = client.prepareM();
+                    client.sendTo("localhost", 8000,
+                            new Message(0, args[0], m, proposal));
                 }
-                client.sendMsg(msg, args[0], port);
+//                client.sendMsg(msg, args[0], port);
             } catch (Exception i) {
                 System.out.println(i);
-                mutex.release();
+//                mutex.release();
                 break;
             }
         }
 
-        client.close();
     }
 
 }
