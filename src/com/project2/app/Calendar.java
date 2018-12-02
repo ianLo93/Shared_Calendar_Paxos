@@ -68,7 +68,7 @@ public class Calendar {
                 if (command.equals("view")) {
                     local.view();
                 } else if (command.equals("myview")) {
-                    local.myView();
+                    local.myView(args[0]);
                 } else if (command.equals("log")) {
                     local.viewLog();
                 } else {
