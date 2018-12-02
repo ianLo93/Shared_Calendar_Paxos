@@ -2,21 +2,41 @@ package com.project2.server;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.io.*;
+import java.text.ParseException;
+
 
 public class Local {
 
     public static int k = 0; // next entry
-//    public static ArrayList<Event> schedule = new ArrayList<>();
-    public static ArrayList<Event> log = new ArrayList<>();
+    private static ArrayList<Appointment> schedule = new ArrayList<>();
+    private static ArrayList<Event> log = new ArrayList<>();
     public static int wait = -1;
     private String maxPrepare;
     private String accNum;
     private Event accVal;
 
     public Local() {
-        maxPrepare = null;
-        accNum = null;
-        accVal = null;
+        try {
+            FileInputStream saveFile = new FileInputStream("state.sav");
+            ObjectInputStream restore = new ObjectInputStream(saveFile);
+
+            this.k = (Integer) restore.readObject();
+            this.schedule = (ArrayList<Appointment>) restore.readObject();
+            this.log = (ArrayList<Event>) restore.readObject();
+            restore.close();
+
+            int reconstructK = 5*(k/5)+1;
+            while (reconstructK <= k){
+                updateSchedule(log.get(reconstructK));
+            }
+
+        } catch (Exception i) {
+            maxPrepare = null;
+            accNum = null;
+            accVal = null;
+        }
+
     }
 
     // Getters
@@ -46,44 +66,82 @@ public class Local {
     }
 
     // Helper functions
-    public void myView(){
-        ArrayList<Appointment> meetings = constructSchedule();
-        ArrayList<Appointment> myMeeting = relaventAppointment(meetings);
-        Collections.sort(myMeeting, Appointment.timeComparator);
-        for (Appointment m : myMeeting) System.out.println(m);
+    public void myView(String myID){
+        Collections.sort(schedule, Appointment.timeComparator);
+        for (Appointment a : schedule) {
+            for (String p : a.getParticipants()){
+                if (p.equals(myID)) {
+                    System.out.println(a);
+                    break;
+                }
+            }
+
+        }
     }
 
     public void view(){
-        ArrayList<Appointment> meetings = constructSchedule();
-        Collections.sort(meetings, Appointment.timeComparator);
-        for (Appointment m : meetings) System.out.println(m);
+        Collections.sort(schedule, Appointment.timeComparator);
+        for (Appointment a : schedule) System.out.println(a);
     }
 
-<<<<<<< HEAD
-    public void myView() {
-        for (Event e: schedule) System.out.println(e.getAppointment());
-=======
-    public void viewLog(){}
-
-    public void add(){}
-
-    public void remove(){}
-
-    private void checkMemberAvailability(){}
-
-    private ArrayList<Appointment> relaventAppointment(ArrayList<Appointment> schedule){}
-
-    private ArrayList<Appointment> constructSchedule(){
-        // TODO: readCopy
-
-        // TODO: construct with log
+    public void viewLog(){
+        for (Event e : log) System.out.println(e);
     }
 
-    private void writeCheckPoint(){}
+    public void updateLog(Event e){
+        log.add(e);
 
-    private ArrayList<Appointment> readCheckPoint(){ }
+    }
 
-    private ArrayList<Integer> checkHoles(){}
+    private void updateSchedule(Event e){
+        if (e.getOp().equals("Schedule")){
+            schedule.add(e.getAppointment());
+        }
+        else if (e.getOp().equals("Cancel")){
+            schedule.remove(e.getAppointment());
+        }
+    }
+
+    private Boolean checkConflicts(Appointment upcoming){
+        String [] participants = upcoming.getParticipants();
+        HashSet<String> dict = new HashSet<>(Arrays.asList(participants));
+
+        int[] occupiedTimes = new int[48];
+        int s = parse_time(upcoming.getStartTime()), e = parse_time(upcoming.getEndTime());
+
+        for (Appointment m : schedule) {
+            if (!m.getDay().equals(upcoming.getDay())) continue;
+            for (String p : m.getParticipants()){
+                if (dict.contains(p)) {
+                    int sm = parse_time(m.getStartTime()), em = parse_time(m.getEndTime());
+                    for (int i = sm; i < em; i++) occupiedTimes[i] = 1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = s; i < e; i++) {
+            if (occupiedTimes[i] == 1) return true;
+        }
+        return false;
+    }
+
+    private void writeCheckPoint(){
+        if (k % 5 != 0) return ;
+        try {
+            FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
+            ObjectOutputStream save = new ObjectOutputStream(saveFile);
+
+            save.writeObject(k);
+            save.writeObject(schedule);
+            save.writeObject(log);
+            save.close();
+        } catch (IOException i) {
+            System.out.println("save_state() failed");
+            System.out.println(i);
+        }
+    }
+
 
     public static int parse_time(String timestamp) {
         String[] clocks = timestamp.split(":");
@@ -100,7 +158,6 @@ public class Local {
             System.out.println("parse_time failed");
             return -1;
         }
->>>>>>> 38fd116505fef81eaec113e573656ddfbb1cbfff
     }
 
 
