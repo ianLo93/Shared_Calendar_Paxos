@@ -6,7 +6,7 @@ import java.io.*;
 
 import com.project2.client.Client;
 import com.project2.client.Message;
-import com.project2.client.Sender;
+import com.project2.server.Local;
 import com.project2.server.Server;
 import com.project2.server.Event;
 
@@ -56,6 +56,7 @@ public class Calendar {
         server.setDaemon(true);
         server.start();
         Client client = new Client(args[0]);
+        Local local = new Local();
 
         Scanner sc = new Scanner(System.in);
         String command;
@@ -65,29 +66,23 @@ public class Calendar {
 //                if (!server.getStatus()) break;
                 command = sc.nextLine();
                 if (command.equals("view")) {
-                    // TODO: print calendar
+                    local.print_calendar();
                 } else if (command.equals("myview")) {
-                    // TODO: print my calendar
+                    local.print_calendar();
                 } else if (command.equals("log")) {
                     // TODO: print log
                 } else {
                     Event proposal = client.parse_command(command);
-//                    if (proposal != null) {
-//                        // TODO: fill holes, do paxos
-//
-//                    }
-                    String m = client.prepareM();
-                    client.sendTo("localhost", 8000,
-                            new Message(0, args[0], m, proposal));
+                    if (proposal != null) {
+                        // TODO: fill holes, do paxos
+                        client.start_paxos(proposal);
+                    }
                 }
-//                client.sendMsg(msg, args[0], port);
             } catch (Exception i) {
                 System.out.println(i);
 //                mutex.release();
                 break;
             }
         }
-
     }
-
 }

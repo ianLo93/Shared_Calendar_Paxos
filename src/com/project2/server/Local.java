@@ -5,8 +5,8 @@ import java.util.*;
 public class Local {
 
     public static int k = 0; // next entry
-    public static ArrayList<Event> shedule = new ArrayList<>();
-    public static ArrayList<Event> log = new ArrayList<>();
+    private ArrayList<Event> schedule = new ArrayList<>();
+    private ArrayList<Event> log = new ArrayList<>();
     public static int wait = -1;
     private String maxPrepare;
     private String accNum;
@@ -45,4 +45,15 @@ public class Local {
     }
 
     // Helper functions
+    public void viewLog() {
+        for (Event e: log) System.out.println(e);
+    }
+
+    public void view() {
+        for (Event e: schedule) System.out.println(e.getAppointment());
+    }
+
+    public void myView() {
+        
+    }
 }
