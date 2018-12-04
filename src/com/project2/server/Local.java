@@ -1,6 +1,7 @@
 package com.project2.server;
 
-import com.project2.client.Message;
+import com.project2.app.Calendar;
+import com.project2.client.*;
 
 import java.util.*;
 import java.io.*;
@@ -16,6 +17,7 @@ public class Local {
     private String maxPrepare;
     private String accNum;
     private Event accVal;
+    private String siteId;
 
     public Local() {
         try {
@@ -89,56 +91,84 @@ public class Local {
         for (Appointment a : schedule) System.out.println(a);
     }
 
-    public void add(){}
-
     public void viewLog(){
         for (Event e : log) System.out.println(e);
     }
 
-    public void updateLog(Event e, int pos){
-        while (log.size() <= pos){
+    public void updateLog(Event e){
+        while (log.size() <= e.getK()){
             log.add(null);
         }
-        log.set(pos, e);
+        log.set(e.getK(), e);
         while (k < log.size() && log.get(k) != null) {
             updateSchedule(log.get(k));
+            k++;
             writeCheckPoint();
         }
 
 
     }
 
-    private void remakeSchedule() {
-        // TODO: read log and construct schedule
-        HashSet<Appointment> s = new HashSet<>();
-        for (int i=log.size()-1; i >= 0; i--) {
-            Event e = log.get(i);
-            if (e.getOp().equals("Schedule")) s.add(e.getAppointment());
-            else s.remove(e.getAppointment());
+    private void updateSchedule(Event e){
+        if (e.getOp().equals("Schedule")){
+            schedule.add(e.getAppointment());
         }
-        for (Appointment a: s) schedule.add(a);
+        else if (e.getOp().equals("Cancel")){
+            if (checkExist(e.getAppointment()))
+                schedule.remove(e.getAppointment());
+            else
+                System.out.println("Unable to cancel meeting"+e.getAppointment().getName());
+        }
     }
-//    private void updateSchedule(Event e){
-//        if (e.getOp().equals("Schedule")){
-//            schedule.add(e.getAppointment());
-//        }
-//        else if (e.getOp().equals("Cancel")){
-//            schedule.remove(e.getAppointment());
-//        }
-//    }
 
-    private Boolean checkConflicts(Appointment upcoming){
+    private boolean checkExist(Appointment a){
+        if (schedule.contains(a)) return true;
+        else return false;
+    }
+
+
+
+    private void fixHoles(Message msg){
+        if (msg.getOp() != 6) return ;
+        ArrayList<Event> events = msg.getPlog();
+        if (events.size() == 0) return ;
+        if (events.get(events.size()-1).getK() < k) return ;
+
+        for (Event e : events){
+            updateLog(e);
+        }
+    }
+
+    private void sendHolesVal(Message msg){
+        if (msg.getOp() != 5) return ;
+        if (msg.getposK() < k){
+            int startK = msg.getposK();
+            ArrayList<Event> plog = new ArrayList<Event>();
+            while (startK < k){
+                plog.add(log.get(startK));
+            }
+            int port = Calendar.phonebook.get(msg.getSenderId());
+            Message sendMsg = new Message(6, siteId, null, null);
+            sendMsg.setPlog(plog);
+            new Client(siteId).sendTo(msg.getSenderId(), port, sendMsg);
+        }
+        else {
+
+        }
+    }
+
+    private boolean checkConflicts(Appointment upcoming){
         String [] participants = upcoming.getParticipants();
         HashSet<String> dict = new HashSet<>(Arrays.asList(participants));
 
         int[] occupiedTimes = new int[48];
         int s = parse_time(upcoming.getStartTime()), e = parse_time(upcoming.getEndTime());
 
-        for (Appointment m : schedule) {
-            if (!m.getDay().equals(upcoming.getDay())) continue;
-            for (String p : m.getParticipants()){
+        for (Appointment a : schedule) {
+            if (!a.getDay().equals(upcoming.getDay())) continue;
+            for (String p : a.getParticipants()){
                 if (dict.contains(p)) {
-                    int sm = parse_time(m.getStartTime()), em = parse_time(m.getEndTime());
+                    int sm = parse_time(a.getStartTime()), em = parse_time(a.getEndTime());
                     for (int i = sm; i < em; i++) occupiedTimes[i] = 1;
                     break;
                 }
@@ -159,22 +189,22 @@ public class Local {
     void handle_msg(Message msg) {
 
     }
-//
-//    private void writeCheckPoint(){
-//        if (k % 5 != 0) return;
-//        try {
-//            FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
-//            ObjectOutputStream save = new ObjectOutputStream(saveFile);
-//
-//            save.writeObject(k);
-//            save.writeObject(schedule);
-//            save.writeObject(log);
-//            save.close();
-//        } catch (IOException i) {
-//            System.out.println("save_state() failed");
-//            System.out.println(i);
-//        }
-//    }
+
+    private void writeCheckPoint(){
+        if (k % 5 != 0) return;
+        try {
+            FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
+            ObjectOutputStream save = new ObjectOutputStream(saveFile);
+
+            save.writeObject(k);
+            save.writeObject(schedule);
+            save.writeObject(log);
+            save.close();
+        } catch (IOException i) {
+            System.out.println("save_state() failed");
+            System.out.println(i);
+        }
+    }
 
 
     static int parse_time(String timestamp) {
