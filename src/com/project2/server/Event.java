@@ -8,11 +8,10 @@ public class Event implements Serializable {
     private String op; // Schedule/Cancel
     private Appointment meeting;
 
-    public Event(int k_, String op_, String name_, String day_, String start_, String end_, String[] participants) {
+    public Event(int k_, String op_, String name, String day, String start, String end, String[] participants) {
         this.k = k_;
         this.op = op_;
-        this.meeting = new Appointment(name_, day_, start_, end_, participants);
-
+        this.meeting = new Appointment(name, day, start, end, participants);
     }
 
     public String getOp() { return op; }

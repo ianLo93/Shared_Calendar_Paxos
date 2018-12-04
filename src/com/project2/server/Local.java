@@ -1,9 +1,9 @@
 package com.project2.server;
 
-import java.lang.reflect.Array;
+import com.project2.client.Message;
+
 import java.util.*;
 import java.io.*;
-import java.text.ParseException;
 
 
 public class Local {
@@ -11,7 +11,8 @@ public class Local {
     public static int k = 0; // next entry
     private static ArrayList<Appointment> schedule = new ArrayList<>();
     private static ArrayList<Event> log = new ArrayList<>();
-    private static int state;
+    public static int state = -1;
+    public static Queue<Event> msg_set = new LinkedList<>();
     private String maxPrepare;
     private String accNum;
     private Event accVal;
@@ -80,7 +81,6 @@ public class Local {
                     break;
                 }
             }
-
         }
     }
 
@@ -88,6 +88,8 @@ public class Local {
         Collections.sort(schedule, Appointment.timeComparator);
         for (Appointment a : schedule) System.out.println(a);
     }
+
+    public void add(){}
 
     public void viewLog(){
         for (Event e : log) System.out.println(e);
@@ -106,14 +108,24 @@ public class Local {
 
     }
 
-    private void updateSchedule(Event e){
-        if (e.getOp().equals("Schedule")){
-            schedule.add(e.getAppointment());
+    private void remakeSchedule() {
+        // TODO: read log and construct schedule
+        HashSet<Appointment> s = new HashSet<>();
+        for (int i=log.size()-1; i >= 0; i--) {
+            Event e = log.get(i);
+            if (e.getOp().equals("Schedule")) s.add(e.getAppointment());
+            else s.remove(e.getAppointment());
         }
-        else if (e.getOp().equals("Cancel")){
-            schedule.remove(e.getAppointment());
-        }
+        for (Appointment a: s) schedule.add(a);
     }
+//    private void updateSchedule(Event e){
+//        if (e.getOp().equals("Schedule")){
+//            schedule.add(e.getAppointment());
+//        }
+//        else if (e.getOp().equals("Cancel")){
+//            schedule.remove(e.getAppointment());
+//        }
+//    }
 
     private Boolean checkConflicts(Appointment upcoming){
         String [] participants = upcoming.getParticipants();
@@ -139,24 +151,33 @@ public class Local {
         return false;
     }
 
-    private void writeCheckPoint(){
-        if (k % 5 != 0) return ;
-        try {
-            FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
-            ObjectOutputStream save = new ObjectOutputStream(saveFile);
-
-            save.writeObject(k);
-            save.writeObject(schedule);
-            save.writeObject(log);
-            save.close();
-        } catch (IOException i) {
-            System.out.println("save_state() failed");
-            System.out.println(i);
-        }
+    private boolean mCompare(String m1, String m2) {
+        return m1.length()>m2.length() ||
+                (m1.length() == m2.length() && m1.compareTo(m2) > 0);
     }
 
+    void handle_msg(Message msg) {
 
-    public static int parse_time(String timestamp) {
+    }
+//
+//    private void writeCheckPoint(){
+//        if (k % 5 != 0) return;
+//        try {
+//            FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
+//            ObjectOutputStream save = new ObjectOutputStream(saveFile);
+//
+//            save.writeObject(k);
+//            save.writeObject(schedule);
+//            save.writeObject(log);
+//            save.close();
+//        } catch (IOException i) {
+//            System.out.println("save_state() failed");
+//            System.out.println(i);
+//        }
+//    }
+
+
+    static int parse_time(String timestamp) {
         String[] clocks = timestamp.split(":");
         if (clocks.length != 2) {
             System.out.println("ERROR: Invalid Time");
