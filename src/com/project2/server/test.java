@@ -2,12 +2,8 @@ package com.project2.server;
 
 public class test {
     public static void main(String[] args) {
-        String a = "10245";
-        String b = "2048";
-        if (a.compareTo(b) < 0) {
-            System.out.println("a < b");
-        } else {
-            System.out.println("b < a");
-        }
+        Event e1 = new Event(0, "Schedule", "", "", "", "", new String[]{"1", "2"});
+        Event e2 = new Event(0, "Schedule", "", "", "", "", new String[]{"1", "2"});
+        if (e1.equals(e2)) System.out.println("They are equal");
     }
 }

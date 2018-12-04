@@ -19,6 +19,24 @@ public class Event implements Serializable {
     public Appointment getAppointment() { return meeting; }
 
     @Override
+    public boolean equals(Object obj) {
+        // checking if both the object references are
+        // referring to the same object.
+        if(this == obj)
+            return true;
+
+        if(obj == null || obj.getClass()!= this.getClass())
+            return false;
+
+        // type casting of the argument.
+        Event e = (Event) obj;
+
+        // comparing the state of argument with
+        // the state of 'this' Object.
+        return (e.k == this.k && e.op.equals(this.op) && e.meeting.equals(this.meeting));
+    }
+
+    @Override
     public String toString(){
         StringBuilder m = new StringBuilder(op + " "+meeting);
         return m.toString();

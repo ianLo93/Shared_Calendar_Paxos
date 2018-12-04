@@ -74,10 +74,6 @@ public class Client {
         }
     }
 
-    private String prepareM() {
-        return "aa";
-    }
-
     public void bcast(int op, String m_, Event proposal) {
         for (Map.Entry<String, Integer> entry: Calendar.phonebook.entrySet()) {
             Sender sd = new Sender(new Message(op, siteId, m_, proposal),

@@ -1,6 +1,7 @@
 package com.project2.server;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class Appointment {
@@ -35,6 +36,25 @@ public class Appointment {
         }
     };
 
+    public boolean equals(Object obj) {
+        // checking if both the object references are
+        // referring to the same object.
+        if(this == obj)
+            return true;
+
+        if(obj == null || obj.getClass()!= this.getClass())
+            return false;
+
+        // type casting of the argument.
+        Appointment a = (Appointment)obj;
+
+        // comparing the state of argument with
+        // the state of 'this' Object.
+        return (a.name.equals(this.name) && a.day.equals(this.day) &&
+                a.start.equals(this.start) && a.end.equals(this.end) &&
+                Arrays.equals(a.participants, this.participants));
+    }
+
     @Override
     public String toString(){
         StringBuilder m = new StringBuilder(name + " " + day+ " " + start + " " + end + " ");
@@ -44,15 +64,6 @@ public class Appointment {
         }
         m.append(participants[i]);
         return m.toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        final Appointment other = (Appointment) obj;
-        if (!this.name.equals(other.name)) return false;
-        else return true;
     }
 
 }

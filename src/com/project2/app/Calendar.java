@@ -13,6 +13,7 @@ import com.project2.server.Event;
 public class Calendar {
 
     public static HashMap<String, Integer> phonebook = new HashMap<>();
+    public static int majority;
 //    public static Semaphore mutex = new Semaphore(1);
 
     public static void readFile(String path) {
@@ -42,6 +43,7 @@ public class Calendar {
 //        readFile("knownhosts_udp.txt");
 
         phonebook.put("localhost", 8000);
+        majority = phonebook.size()/2+1;
 
         if(args.length != 1 || !Calendar.phonebook.containsKey(args[0])){
             System.out.println("ERROR: Invalid Arguments");
@@ -52,11 +54,11 @@ public class Calendar {
         // Get port number (args[0] stands for site ID)
         int port = Calendar.phonebook.get(args[0]);
 
-        Server server = new Server(port);
+        Server server = new Server(args[0], port);
         server.setDaemon(true);
         server.start();
         Client client = new Client(args[0]);
-        Local local = new Local();
+        Local local = new Local(args[0]);
 
         Scanner sc = new Scanner(System.in);
         String command;
@@ -68,7 +70,7 @@ public class Calendar {
                 if (command.equals("view")) {
                     local.view();
                 } else if (command.equals("myview")) {
-                    local.myView(args[0]);
+                    local.myView();
                 } else if (command.equals("log")) {
                     local.viewLog();
                 } else {
@@ -76,9 +78,7 @@ public class Calendar {
                     if (proposal != null) {
                         // TODO: fill holes, do paxos
                         if (local.state == -1) {
-                            local.state = 6;
-                            client.bcast(5, "ab", new Event(local.k, null,
-                                    null, null, null, null, null));
+                            local.sanity_check();
                         }
                         local.msg_set.add(proposal);
                     }

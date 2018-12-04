@@ -10,10 +10,10 @@ public class Server extends Thread {
     private Local local;
     private boolean running;
 
-    public Server(int port_) {
+    public Server(String siteid, int port_) {
         try {
             this.serverSocket = new DatagramSocket(port_);
-            this.local = new Local();
+            this.local = new Local(siteid);
             this.running = false;
         } catch (SocketException s) {
             System.out.println(s);
