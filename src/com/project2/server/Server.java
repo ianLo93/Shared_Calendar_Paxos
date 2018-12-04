@@ -1,5 +1,6 @@
 package com.project2.server;
 
+import com.project2.client.Client;
 import com.project2.client.Message;
 
 import java.io.*;

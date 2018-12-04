@@ -35,13 +35,21 @@ public class Local {
             this.siteId = siteId_;
             restore.close();
 
+            int reconstructK = 5*(k/5)+1;
+            while (reconstructK <= k){
+                updateSchedule(log.get(reconstructK));
+            }
+            this.state = 5;
+
         } catch (Exception i) {
             maxPrepare = null;
             accNum = null;
             accVal = null;
             pVal = null;
             pNum = null;
+            this.state = 5;
         }
+
 
     }
 
@@ -57,6 +65,8 @@ public class Local {
     public Event getAccVal() {
         return accVal;
     }
+
+    public int getState() { return this.state; }
 
     // Setters
     public void setMaxPrepare(String maxPrepare) {
@@ -94,18 +104,17 @@ public class Local {
     }
 
     public void updateLog(Event e){
-        log.add(e);
-    }
-
-    private void remakeSchedule() {
-        // TODO: read log and construct schedule
-        HashSet<Appointment> s = new HashSet<>();
-        for (int i=log.size()-1; i >= 0; i--) {
-            Event e = log.get(i);
-            if (e.getOp().equals("Schedule")) s.add(e.getAppointment());
-            else s.remove(e.getAppointment());
+        while (log.size() <= e.getK()){
+            log.add(null);
         }
-        for (Appointment a: s) schedule.add(a);
+        log.set(e.getK(), e);
+        while (k < log.size() && log.get(k) != null) {
+            updateSchedule(log.get(k));
+            k++;
+            writeCheckPoint();
+        }
+
+
     }
 
     private void updateSchedule(Event e){
@@ -113,7 +122,46 @@ public class Local {
             schedule.add(e.getAppointment());
         }
         else if (e.getOp().equals("Cancel")){
-            schedule.remove(e.getAppointment());
+            if (checkExist(e.getAppointment()))
+                schedule.remove(e.getAppointment());
+            else
+                System.out.println("Unable to cancel meeting"+e.getAppointment().getName());
+        }
+    }
+
+    private boolean checkExist(Appointment a){
+        if (schedule.contains(a)) return true;
+        else return false;
+    }
+
+
+
+    private void fixHoles(Message msg){
+        if (msg.getOp() != 6) return ;
+        ArrayList<Event> events = msg.getPlog();
+        if (events.size() == 0) return ;
+        if (events.get(events.size()-1).getK() < k) return ;
+
+        for (Event e : events){
+            updateLog(e);
+        }
+    }
+
+    private void sendHolesVal(Message msg){
+        if (msg.getOp() != 5) return ;
+        if (msg.getposK() < k){
+            int startK = msg.getposK();
+            ArrayList<Event> plog = new ArrayList<Event>();
+            while (startK < k){
+                plog.add(log.get(startK));
+            }
+            int port = Calendar.phonebook.get(msg.getSenderId());
+            Message sendMsg = new Message(6, siteId, null, null);
+            sendMsg.setPlog(plog);
+            new Client(siteId).sendTo(msg.getSenderId(), port, sendMsg);
+        }
+        else {
+
         }
     }
 
@@ -124,11 +172,11 @@ public class Local {
         int[] occupiedTimes = new int[48];
         int s = parse_time(upcoming.getStartTime()), e = parse_time(upcoming.getEndTime());
 
-        for (Appointment m : schedule) {
-            if (!m.getDay().equals(upcoming.getDay())) continue;
-            for (String p : m.getParticipants()){
+        for (Appointment a : schedule) {
+            if (!a.getDay().equals(upcoming.getDay())) continue;
+            for (String p : a.getParticipants()){
                 if (dict.contains(p)) {
-                    int sm = parse_time(m.getStartTime()), em = parse_time(m.getEndTime());
+                    int sm = parse_time(a.getStartTime()), em = parse_time(a.getEndTime());
                     for (int i = sm; i < em; i++) occupiedTimes[i] = 1;
                     break;
                 }
