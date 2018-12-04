@@ -76,28 +76,19 @@ public class Local {
     }
 
     public void updateLog(Event e){
-        while (log.size() <= e.getK()){
-            log.add(null);
-        }
+        while (log.size() <= e.getK()) log.add(null);
         log.set(e.getK(), e);
         while (k < log.size() && log.get(k) != null) {
             updateSchedule(log.get(k));
             k++;
             writeCheckPoint();
         }
-
-
     }
 
     private void updateSchedule(Event e){
-        if (e.getOp().equals("Schedule")){
-            schedule.add(e.getAppointment());
-        }
-        else if (e.getOp().equals("Cancel")){
-            if (checkExist(e.getAppointment()))
-                schedule.remove(e.getAppointment());
-            else
-                System.out.println("Unable to cancel meeting"+e.getAppointment().getName());
+        if (e.getOp().equals("Schedule")) { schedule.add(e.getAppointment()); }
+        else {
+            if (checkExist(e.getAppointment())) schedule.remove(e.getAppointment());
         }
     }
 
@@ -107,34 +98,24 @@ public class Local {
     }
 
 
-
     private void fixHoles(Message msg){
-        if (msg.getOp() != 6) return ;
         ArrayList<Event> events = msg.getPlog();
-        if (events.size() == 0) return ;
-        if (events.get(events.size()-1).getK() < k) return ;
-
-        for (Event e : events){
-            updateLog(e);
+        if (events.size() > 0 && events.get(events.size()-1).getK() >= k) {
+            for (Event e : events)
+                updateLog(e);
         }
     }
 
-    private void sendHolesVal(Message msg){
-        if (msg.getOp() != 5) return ;
-        if (msg.getposK() < k){
-            int startK = msg.getposK();
-            ArrayList<Event> plog = new ArrayList<Event>();
-            while (startK < k){
-                plog.add(log.get(startK));
-            }
-            int port = Calendar.phonebook.get(msg.getSenderId());
-            Message sendMsg = new Message(6, siteId, null, null);
-            sendMsg.setPlog(plog);
-            new Client(siteId).sendTo(msg.getSenderId(), port, sendMsg);
+    private void sendHolesVal(Message msg) {
+        int startK = msg.getV().getK();
+        ArrayList<Event> plog = new ArrayList<>();
+        while (startK < k) {
+            plog.add(log.get(startK));
         }
-        else {
-
-        }
+        int port = Calendar.phonebook.get(msg.getSenderId());
+        Message sendMsg = new Message(6, siteId, null, null);
+        sendMsg.setPlog(plog);
+        new Client(siteId).sendTo(msg.getSenderId(), port, sendMsg);
     }
 
     private boolean checkConflicts(Appointment upcoming){
@@ -180,7 +161,7 @@ public class Local {
                 null, null, null,null, null, null));
     }
 
-    void start_paxos(Event proposal) {
+    private void start_paxos(Event proposal) {
         state = 1;
         count = 0;
         pVal = proposal;
@@ -188,7 +169,7 @@ public class Local {
         new Client(siteId).bcast(0, pNum, pVal);
     }
 
-    void end_paxos() {
+    private void end_paxos() {
         state = -1;
         count = 0;
         accVal = null;
@@ -232,19 +213,21 @@ public class Local {
         }
         // On receive check maxK
         else if (msg.getOp() == 5) {
-            // TODO: send values from his K to my K
+            if (msg.getV().getK() < k) sendHolesVal(msg);
             if (msg.getV().getK() > k && state != 6) sanity_check();
         }
         // On receive waiting messages
         else if (msg.getOp() == state) {
             count++;
+            // Waiting for maxK messages (sanity checking)
             if (state == 6) {
-                // TODO: Fill holes
+                fixHoles(msg);
                 if (count >= Calendar.majority) {
                     if (msg_set.isEmpty()) state = -1;
                     else start_paxos(msg_set.remove());
                 }
             }
+            // Waiting for promise messages
             if (state == 1) {
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
@@ -256,12 +239,14 @@ public class Local {
                     new Client(siteId).bcast(2, pNum, pVal);
                 }
             }
+            // Waiting for ack messages
             if (state == 3 && count >= Calendar.majority) {
                 new Client(siteId).bcast(4, pNum, pVal);
                 end_paxos();
                 if (!msg_set.isEmpty()) sanity_check();
             }
         }
+        else return;
     }
 
     private void writeCheckPoint(){

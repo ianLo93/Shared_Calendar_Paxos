@@ -43,9 +43,5 @@ public class Message implements Serializable {
 
     public ArrayList<Event> getPlog() { return this.plog; }
 
-    public int getposK() {return this.posK;}
-
     public void setPlog(ArrayList<Event> plog_) { this.plog = plog_; }
-
-    public void setposK(int k) { this.posK = k; }
 }
