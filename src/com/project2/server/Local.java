@@ -39,7 +39,7 @@ public class Local {
             while (reconstructK <= k){
                 updateSchedule(log.get(reconstructK));
             }
-            this.state = 5;
+            sanity_check();
 
         } catch (Exception i) {
             maxPrepare = null;
@@ -47,7 +47,7 @@ public class Local {
             accVal = null;
             pVal = null;
             pNum = null;
-            this.state = 5;
+            sanity_check();
         }
 
 
@@ -180,9 +180,9 @@ public class Local {
 
     void handle_msg(Message msg) {
         int port = Calendar.phonebook.get(msg.getSenderId());
+        if (msg.getV().getK() > k && state != 6) sanity_check();
         // On receive prepare(m)
-        if (msg.getOp() == 0) {
-            if (msg.getV().getK() > k && state != 6) sanity_check();
+        if (msg.getV().getK() >= k && msg.getOp() == 0) {
             if (mCompare(msg.getM(), maxPrepare) > 0) {
                 maxPrepare = msg.getM();
                 new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
@@ -190,8 +190,7 @@ public class Local {
             }
         }
         // On receive accept(accNum, accVal)
-        else if (msg.getOp() == 2) {
-            if (msg.getV().getK() > k && state != 6) sanity_check();
+        else if (msg.getV().getK() >= k && msg.getOp() == 2) {
             if (mCompare(msg.getM(), maxPrepare) >= 0) {
                 maxPrepare = msg.getM();
                 accVal = msg.getV();
@@ -201,10 +200,8 @@ public class Local {
             }
         }
         // On receive commit(v)
-        else if (msg.getOp() == 4) {
+        else if (msg.getV().getK() >= k && msg.getOp() == 4) {
             updateLog(msg.getV());
-            // check holes
-            if (msg.getV().getK() > k && state != 6) sanity_check();
             // If I'm it's the entry I am working on && I am not filling holes, I quit
             if (msg.getV().getK() == k && state != 6) {
                 if (!msg_set.isEmpty()) sanity_check();
