@@ -75,7 +75,12 @@ public class Calendar {
                     Event proposal = client.parse_command(command);
                     if (proposal != null) {
                         // TODO: fill holes, do paxos
-                        client.start_paxos(proposal);
+                        if (local.state == -1) {
+                            local.state = 6;
+                            client.bcast(5, "ab", new Event(local.k, null,
+                                    null, null, null, null, null));
+                        }
+                        local.msg_set.add(proposal);
                     }
                 }
             } catch (Exception i) {

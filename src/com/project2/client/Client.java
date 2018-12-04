@@ -78,12 +78,6 @@ public class Client {
         return "aa";
     }
 
-    public void start_paxos(Event proposal) {
-        String m = prepareM();
-        Local.wait = 1;
-        bcast(0, m, proposal);
-    }
-
     public void bcast(int op, String m_, Event proposal) {
         for (Map.Entry<String, Integer> entry: Calendar.phonebook.entrySet()) {
             Sender sd = new Sender(new Message(op, siteId, m_, proposal),

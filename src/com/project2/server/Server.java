@@ -7,13 +7,13 @@ import java.net.*;
 
 public class Server extends Thread {
     private DatagramSocket serverSocket;
-    private Local mySite;
+    private Local local;
     private boolean running;
 
     public Server(int port_) {
         try {
             this.serverSocket = new DatagramSocket(port_);
-            this.mySite = new Local();
+            this.local = new Local();
             this.running = false;
         } catch (SocketException s) {
             System.out.println(s);
@@ -21,15 +21,6 @@ public class Server extends Thread {
     }
 
     public boolean getStatus() { return running; }
-
-    private void handle_msg(Message msg) {
-        if (msg.getOp() == 0) {
-//            if (msg.getM() > mySite.getMaxPrepare()) {
-//                mySite.setMaxPrepare(msg.getM());
-//
-//            }
-        }
-    }
 
     @Override
     public void run() {
@@ -59,9 +50,7 @@ public class Server extends Thread {
                 objIn.close();
 
                 // TODO: handle received message
-                if (recvMsg.getV() == null) {
-                    System.out.println("Copy the empty command");
-                }
+                if (recvMsg.getV() != null) local.handle_msg(recvMsg);
             }  catch (IOException i) {
                 System.out.println(i);
                 running = false;
