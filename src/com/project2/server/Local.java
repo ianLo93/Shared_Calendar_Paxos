@@ -90,9 +90,15 @@ public class Local {
 
     }
 
-    private ArrayList<Appointment> constructSchedule() {
-        // TODO: readCopy
-        return new ArrayList<>();
+    private void remakeSchedule() {
+        // TODO: read log and construct schedule
+        HashSet<Appointment> s = new HashSet<>();
+        for (int i=log.size()-1; i >= 0; i--) {
+            Event e = log.get(i);
+            if (e.getOp().equals("Schedule")) s.add(e.getAppointment());
+            else s.remove(e.getAppointment());
+        }
+        for (Appointment a: s) schedule.add(a);
     }
 //    private void updateSchedule(Event e){
 //        if (e.getOp().equals("Schedule")){
@@ -133,7 +139,7 @@ public class Local {
     }
 
     void handle_msg(Message msg) {
-        
+
     }
 //
 //    private void writeCheckPoint(){
