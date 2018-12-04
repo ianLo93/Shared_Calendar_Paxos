@@ -1,5 +1,6 @@
 package com.project2.server;
 
+import com.project2.client.Client;
 import com.project2.client.Message;
 
 import java.io.*;
@@ -14,6 +15,9 @@ public class Server extends Thread {
         try {
             this.serverSocket = new DatagramSocket(port_);
             this.mySite = new Local();
+
+            new Client("localhost").sendTo("localhost", 8000,
+                    new Message(0, "", "hahahaha", null));
             this.running = false;
         } catch (SocketException s) {
             System.out.println(s);

@@ -6,7 +6,7 @@ import java.io.*;
 
 public class Message implements Serializable {
 
-    private int operation; // 0: prepare, 1: promise, 2: accept, 3: ack, 4: commit
+    private int operation; // 0: prepare, 1: promise, 2: accept, 3: ack, 4: commit, 5: fill_holes, 6: recover_holes
     private String senderId;
     private String m; // Prepare number/accepted number
     private Event v; // Proposed value/accepted value

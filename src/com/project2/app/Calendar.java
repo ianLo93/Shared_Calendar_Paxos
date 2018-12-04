@@ -73,10 +73,11 @@ public class Calendar {
                     local.viewLog();
                 } else {
                     Event proposal = client.parse_command(command);
-                    if (proposal != null) {
-                        // TODO: fill holes, do paxos
-                        client.start_paxos(proposal);
-                    }
+//                    if (proposal != null) {
+//                        // TODO: fill holes, do paxos
+//                        client.start_paxos(proposal);
+//                    }
+                    client.sendTo(args[0], 8000, new Message(0, args[0], "", proposal));
                 }
             } catch (Exception i) {
                 System.out.println(i);

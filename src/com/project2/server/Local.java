@@ -11,7 +11,7 @@ public class Local {
     public static int k = 0; // next entry
     private static ArrayList<Appointment> schedule = new ArrayList<>();
     private static ArrayList<Event> log = new ArrayList<>();
-    public static int wait = -1;
+    private static int state;
     private String maxPrepare;
     private String accNum;
     private Event accVal;
@@ -30,12 +30,15 @@ public class Local {
             while (reconstructK <= k){
                 updateSchedule(log.get(reconstructK));
             }
+            this.state = 5;
 
         } catch (Exception i) {
             maxPrepare = null;
             accNum = null;
             accVal = null;
+            this.state = 5;
         }
+
 
     }
 
@@ -51,6 +54,8 @@ public class Local {
     public Event getAccVal() {
         return accVal;
     }
+
+    public int getState() { return this.state; }
 
     // Setters
     public void setMaxPrepare(String maxPrepare) {
@@ -88,8 +93,16 @@ public class Local {
         for (Event e : log) System.out.println(e);
     }
 
-    public void updateLog(Event e){
-        log.add(e);
+    public void updateLog(Event e, int pos){
+        while (log.size() <= pos){
+            log.add(null);
+        }
+        log.set(pos, e);
+        while (k < log.size() && log.get(k) != null) {
+            updateSchedule(log.get(k));
+            writeCheckPoint();
+        }
+
 
     }
 
