@@ -208,7 +208,11 @@ public class Local {
             // If I'm it's the entry I am working on && I am not filling holes, I quit
             if (msg.getV().getK() == k && state != 6) {
                 if (!msg_set.isEmpty()) sanity_check();
-                else end_paxos();
+                else {
+                    if (pVal != null && !msg.getV().equals(pVal))
+                        System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
+                    end_paxos();
+                }
             }
         }
         // On receive check maxK
