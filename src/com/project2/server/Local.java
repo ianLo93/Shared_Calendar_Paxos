@@ -53,34 +53,6 @@ public class Local {
 
     }
 
-    // Getters
-    public String getMaxPrepare() {
-        return maxPrepare;
-    }
-
-    public String getAccNum() {
-        return accNum;
-    }
-
-    public Event getAccVal() {
-        return accVal;
-    }
-
-    public int getState() { return this.state; }
-
-    // Setters
-    public void setMaxPrepare(String maxPrepare) {
-        this.maxPrepare = maxPrepare;
-    }
-
-    public void setAccNum(String accNum) {
-        this.accNum = accNum;
-    }
-
-    public void setAccVal(Event accVal) {
-        this.accVal = accVal;
-    }
-
     // Helper functions
     public void myView(){
         Collections.sort(schedule, Appointment.timeComparator);
@@ -292,21 +264,21 @@ public class Local {
         }
     }
 
-//    private void writeCheckPoint(){
-//        if (k % 5 != 0) return;
-//        try {
-//            FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
-//            ObjectOutputStream save = new ObjectOutputStream(saveFile);
-//
-//            save.writeObject(k);
-//            save.writeObject(schedule);
-//            save.writeObject(log);
-//            save.close();
-//        } catch (IOException i) {
-//            System.out.println("save_state() failed");
-//            System.out.println(i);
-//        }
-//    }
+    private void writeCheckPoint(){
+        if (k % 5 != 0) return;
+        try {
+            FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
+            ObjectOutputStream save = new ObjectOutputStream(saveFile);
+
+            save.writeObject(k);
+            save.writeObject(schedule);
+            save.writeObject(log);
+            save.close();
+        } catch (IOException i) {
+            System.out.println("save_state() failed");
+            System.out.println(i);
+        }
+    }
 
 
     static int parse_time(String timestamp) {

@@ -76,10 +76,7 @@ public class Calendar {
                 } else {
                     Event proposal = client.parse_command(command);
                     if (proposal != null) {
-                        // TODO: fill holes, do paxos
-                        if (local.state == -1) {
-                            local.sanity_check();
-                        }
+                        if (local.state == -1) local.sanity_check();
                         local.msg_set.add(proposal);
                     }
                 }
