@@ -56,7 +56,7 @@ public class Local {
             }
 
             sanity_check();
-            setTimer(1);
+            setTimer(2);
 
         } catch (Exception i) {
             maxPrepare = null;
@@ -66,7 +66,7 @@ public class Local {
             pNum = null;
             propose = 1;
             sanity_check();
-            setTimer(1);
+            setTimer(2);
         }
     }
 
