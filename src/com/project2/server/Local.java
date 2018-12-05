@@ -23,6 +23,7 @@ public class Local {
     private String accNum;
     private Event accVal;
     private int count;
+    private int propose;
 
     public Local(String siteId_) {
         try {
@@ -47,6 +48,7 @@ public class Local {
             accVal = null;
             pVal = null;
             pNum = null;
+            propose = 1;
             sanity_check();
         }
 
@@ -112,7 +114,7 @@ public class Local {
         while (startK < k) {
             plog.add(log.get(startK));
         }
-        int port = Calendar.phonebook.get(msg.getSenderId());
+        int port = Calendar.phonebook.get(msg.getSenderId())[1];
         Message sendMsg = new Message(6, siteId, null, new Event(
                 k, null, null, null, null, null, null));
         sendMsg.setPlog(plog);
@@ -152,7 +154,17 @@ public class Local {
     }
 
     private String prepareM() {
-        return "ab";
+        propose += 1;
+        String pos_i = Integer.toString(Calendar.phonebook.get(siteId)[0]);
+        while (Integer.toString(Calendar.index).length() > pos_i.length()) pos_i = "0"+pos_i;
+        if (maxPrepare != null) {
+            while((Integer.toString(propose) + pos_i).compareTo(maxPrepare) < 0){
+                propose++;
+            }
+        }
+
+        return Integer.toString(propose) +pos_i;
+
     }
 
     public void sanity_check() {
@@ -181,7 +193,7 @@ public class Local {
     }
 
     void handle_msg(Message msg) {
-        int port = Calendar.phonebook.get(msg.getSenderId());
+        int port = Calendar.phonebook.get(msg.getSenderId())[1];
         if (msg.getV().getK() > k) {
             if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
             sanity_check();
