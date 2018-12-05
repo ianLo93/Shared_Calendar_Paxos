@@ -51,7 +51,7 @@ public class Local {
                 restore.close();
             }
             catch (Exception i){
-                System.out.println("load checkpoint.sav failed");
+//                System.out.println("load checkpoint.sav failed");
             }
 
             int reconstructK = 5*(k/5)+1;
@@ -64,14 +64,6 @@ public class Local {
 
         } catch (Exception i) {
             init(siteId_);
-//            maxPrepare = "0";
-//            accNum = null;
-//            accVal = null;
-//            pVal = null;
-//            pNum = null;
-//            propose = 1;
-//            siteId = siteId_;
-
         }
     }
 
@@ -223,36 +215,60 @@ public class Local {
         pNum = null;
     }
 
-    void handle_msg(Message msg) {
-        int port = Calendar.phonebook.get(msg.getSenderId())[1];
-        if (msg.getV() != null && msg.getV().getK() > k) {
-            if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
-            if (state != 6) {
-                sanity_check();
-                setTimer(2);
+    class Acceptor extends Thread {
+
+        private Message msg;
+
+        Acceptor(Message msg_) {
+            this.msg = msg_;
+        }
+
+        @Override
+        public void run() {
+            int port = Calendar.phonebook.get(msg.getSenderId())[1];
+            if (msg.getV() != null && msg.getV().getK() > k) {
+                if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
+                if (state != 6) {
+                    sanity_check();
+                    setTimer(2);
+                }
+            }
+            // On receive prepare(m)
+            if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 0) {
+                System.out.println("receiving prepare msg");
+                if (mCompare(msg.getM(), maxPrepare) > 0) {
+                    maxPrepare = msg.getM();
+                    new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
+                            1, siteId, accNum, accVal));
+                }
+            }
+            // On receive accept(accNum, accVal)
+            else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 2) {
+                System.out.println("receiving accept msg");
+                if (mCompare(msg.getM(), maxPrepare) >= 0) {
+                    maxPrepare = msg.getM();
+                    accVal = msg.getV();
+                    accNum = msg.getM();
+                    new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
+                            3, siteId, accNum, accVal));
+                }
+            }
+            // On receive check maxK
+            else {
+                System.out.println("receiving sanity-check msg");
+                sendHolesVal(msg);
             }
         }
-        // On receive prepare(m)
-        if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 0) {
-            System.out.println("receiving prepare msg");
-            if (mCompare(msg.getM(), maxPrepare) > 0) {
-                maxPrepare = msg.getM();
-                new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
-                        1, siteId, accNum, accVal));
-            }
+    }
+
+    void message_handler(Message msg) {
+        // Acceptor
+        if (msg.getOp() == 0 || msg.getOp() == 2 || msg.getOp() == 5) {
+            Acceptor acc = new Acceptor(msg);
+            acc.setDaemon(true);
+            acc.start();
         }
-        // On receive accept(accNum, accVal)
-        else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 2) {
-            System.out.println("receiving accept msg");
-            if (mCompare(msg.getM(), maxPrepare) >= 0) {
-                maxPrepare = msg.getM();
-                accVal = msg.getV();
-                accNum = msg.getM();
-                new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
-                        3, siteId, accNum, accVal));
-            }
-        }
-        // On receive commit(v)
+        // Learner: On receive commit(v)
         else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 4) {
             System.out.println("receiving commit msg");
             updateLog(msg.getV());
@@ -270,12 +286,7 @@ public class Local {
                 }
             }
         }
-        // On receive check maxK
-        else if (msg.getOp() == 5) {
-            System.out.println("receiving sanity-check msg");
-            sendHolesVal(msg);
-        }
-        // On receive waiting messages
+        // Proposer: on receive waiting messages
         else if (msg.getOp() == state) {
             System.out.println("message same as state");
             count++;
@@ -294,13 +305,11 @@ public class Local {
             else if (state == 1) {
                 System.out.println("receiving promise msg");
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
-                    System.out.println(274);
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                     pVal = msg.getV();
                 }
                 if (count >= Calendar.majority) {
                     timer.cancel();
-                    numRetries = 0;
                     state = 3;
                     count = 0;
                     new Client(siteId).bcast(2, pNum, pVal);
