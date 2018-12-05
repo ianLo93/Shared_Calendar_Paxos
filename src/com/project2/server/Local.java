@@ -4,7 +4,6 @@ import com.project2.app.Calendar;
 import com.project2.client.Client;
 import com.project2.client.Message;
 
-import java.sql.SQLOutput;
 import java.util.*;
 import java.io.*;
 
@@ -16,6 +15,8 @@ public class Local {
     public static ArrayList<Event> log = new ArrayList<>();
     public static int state = -1; // 1: wait promise, 3: waiting ack, 6: waiting maxK, -1: none
     public static Queue<Event> msg_set = new LinkedList<>();
+    private static Timer timer; // Set timeout periods
+    private static int numRetries = 0;
     private String siteId;
 
     private String maxPrepare;
@@ -43,16 +44,19 @@ public class Local {
                 this.schedule = (ArrayList<Appointment>) restore.readObject();
                 restore.close();
 
-                int reconstructK = 5*(k/5)+1;
-                while (reconstructK <= k){
-                    updateSchedule(log.get(reconstructK));
-                }
+
             }
             catch (Exception i){
                 System.out.println("load checkpoint.sav failed");
             }
 
+            int reconstructK = 5*(k/5)+1;
+            while (reconstructK <= k){
+                updateSchedule(log.get(reconstructK));
+            }
+
             sanity_check();
+            setTimer(1);
 
         } catch (Exception i) {
             maxPrepare = null;
@@ -62,9 +66,8 @@ public class Local {
             pNum = null;
             propose = 1;
             sanity_check();
+            setTimer(1);
         }
-
-
     }
 
     // Helper functions
@@ -165,6 +168,11 @@ public class Local {
         else return -1;
     }
 
+    public void setTimer(int seconds) {
+        timer = new Timer();
+        timer.schedule(new Timeout(), seconds*1000, seconds*1000);
+    }
+
     private String prepareM() {
         propose += 1;
         String pos_i = Integer.toString(Calendar.phonebook.get(siteId)[0]);
@@ -180,12 +188,10 @@ public class Local {
     }
 
     public void sanity_check() {
-        if (state != 6) {
-            state = 6;
-            count = 0;
-            new Client(siteId).bcast(5, "-1", new Event(k,
-                    null, null, null, null, null, null));
-        }
+        state = 6;
+        count = 0;
+        new Client(siteId).bcast(5, "-1", new Event(k,
+                null, null, null, null, null, null));
     }
 
     private void start_paxos(Event proposal) {
@@ -208,7 +214,10 @@ public class Local {
         int port = Calendar.phonebook.get(msg.getSenderId())[1];
         if (msg.getV().getK() > k) {
             if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
-            sanity_check();
+            if (state != 6) {
+                sanity_check();
+                setTimer(2);
+            }
         }
         // On receive prepare(m)
         if (msg.getV().getK() >= k && msg.getOp() == 0) {
@@ -236,7 +245,10 @@ public class Local {
                 if (state != -1 && pVal != null && !msg.getV().equals(pVal))
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                 end_paxos();
-                if (!msg_set.isEmpty()) sanity_check();
+                if (!msg_set.isEmpty()) {
+                    sanity_check();
+                    setTimer(2);
+                }
             }
         }
         // On receive check maxK
@@ -250,6 +262,8 @@ public class Local {
             if (state == 6) {
                 fixHoles(msg);
                 if (count >= Calendar.majority) {
+                    timer.cancel();
+                    numRetries = 0;
                     if (msg_set.isEmpty()) state = -1;
                     else start_paxos(msg_set.remove());
                 }
@@ -261,16 +275,23 @@ public class Local {
                     pVal = msg.getV();
                 }
                 if (count >= Calendar.majority) {
+                    timer.cancel();
+                    numRetries = 0;
                     state = 3;
                     count = 0;
                     new Client(siteId).bcast(2, pNum, pVal);
+                    setTimer(2);
                 }
             }
             // Waiting for ack messages
             if (state == 3 && count >= Calendar.majority) {
+                timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
                 end_paxos();
-                if (!msg_set.isEmpty()) sanity_check();
+                if (!msg_set.isEmpty()) {
+                    sanity_check();
+                    setTimer(2);
+                }
             }
         }
         else return;
@@ -321,6 +342,28 @@ public class Local {
         } catch (NumberFormatException n) {
             System.out.println("parse_time failed");
             return -1;
+        }
+    }
+
+    class Timeout extends TimerTask {
+        @Override
+        public void run() {
+            if (numRetries < 2) {
+                numRetries++;
+                if (state == 6) sanity_check();
+                else start_paxos(pVal);
+            } else {
+                numRetries = 0;
+                end_paxos();
+                timer.cancel();
+                if (!msg_set.isEmpty()) {
+                    sanity_check();
+                    setTimer(2);
+                }
+                if (state != 6)
+                    System.out.println("Unable to "+pVal.getOp()+" meeting "+
+                            pVal.getAppointment().getName()+".");
+            }
         }
     }
 
