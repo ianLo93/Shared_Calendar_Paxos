@@ -207,8 +207,7 @@ public class Local {
         new Client(siteId).bcast(0, pNum, pVal);
     }
 
-    private void end_paxos() {
-        state = -1;
+    private void clearSite() {
         accVal = null;
         accNum = null;
         pVal = null;
@@ -227,7 +226,7 @@ public class Local {
         public void run() {
             int port = Calendar.phonebook.get(msg.getSenderId())[1];
             if (msg.getV() != null && msg.getV().getK() > k) {
-                if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
+                if (accVal != null && msg.getV().getK() > accVal.getK()) clearSite();
                 if (state != 6) {
                     sanity_check();
                     setTimer(2);
@@ -271,18 +270,21 @@ public class Local {
         // Learner: On receive commit(v)
         else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 4) {
             System.out.println("receiving commit msg");
+            if (msg.getV().getK() > k && state != 6) sanity_check();
             updateLog(msg.getV());
+            clearSite();
             // If it's the entry I am working on
             if (msg.getV().getK() == k-1) {
+                // Retry or unable
                 if (state != -1 && pVal != null && !msg.getV().equals(pVal)) {
-//                    System.out.println(243);
                     System.out.println("Unable to " + pVal.getOp() + " meeting " +
                             pVal.getAppointment().getName() + ".");
                 }
-                end_paxos();
-                if (!msg_set.isEmpty()) {
-                    sanity_check();
-                    setTimer(2);
+                if (state != 6) {
+                    if (!msg_set.isEmpty()) {
+                        sanity_check();
+                        setTimer(2);
+                    } else state = -1;
                 }
             }
         }
@@ -304,6 +306,7 @@ public class Local {
             // Waiting for promise messages
             else if (state == 1) {
                 System.out.println("receiving promise msg");
+                // Retry or unable?
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                     pVal = msg.getV();
@@ -321,11 +324,11 @@ public class Local {
                 System.out.println("receiving ack msg");
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
-                end_paxos();
+                clearSite();
                 if (!msg_set.isEmpty()) {
                     sanity_check();
                     setTimer(2);
-                }
+                } else state = -1;
             }
         }
         else return;
@@ -390,8 +393,8 @@ public class Local {
         pNum = null;
         propose = 1;
         siteId = siteid_;
-        schedule = new ArrayList<Appointment>();
-        log = new ArrayList<Event>();
+        schedule = new ArrayList<>();
+        log = new ArrayList<>();
         k = 0;
     }
 
@@ -404,7 +407,8 @@ public class Local {
                 else start_paxos(pVal);
             } else {
                 numRetries = 0;
-                end_paxos();
+                clearSite();
+                state = -1;
                 timer.cancel();
                 if (!msg_set.isEmpty()) {
                     sanity_check();
