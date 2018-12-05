@@ -35,6 +35,7 @@ public class Local {
             this.k = (Integer) restore.readObject();
             this.log = (ArrayList<Event>) restore.readObject();
             this.siteId = siteId_;
+            // TODO: WRITE & READ ACCNUM, ACCVAL
             restore.close();
 
             try{
@@ -65,8 +66,8 @@ public class Local {
             pVal = null;
             pNum = null;
             propose = 1;
-            sanity_check();
-            setTimer(2);
+            siteId = siteId_;
+
         }
     }
 
@@ -221,6 +222,7 @@ public class Local {
         }
         // On receive prepare(m)
         if (msg.getV().getK() >= k && msg.getOp() == 0) {
+            System.out.println("receiving prepare msg");
             if (mCompare(msg.getM(), maxPrepare) > 0) {
                 maxPrepare = msg.getM();
                 new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
@@ -229,6 +231,7 @@ public class Local {
         }
         // On receive accept(accNum, accVal)
         else if (msg.getV().getK() >= k && msg.getOp() == 2) {
+            System.out.println("receiving accept msg");
             if (mCompare(msg.getM(), maxPrepare) >= 0) {
                 maxPrepare = msg.getM();
                 accVal = msg.getV();
@@ -239,6 +242,7 @@ public class Local {
         }
         // On receive commit(v)
         else if (msg.getV().getK() >= k && msg.getOp() == 4) {
+            System.out.println("receiving commit msg");
             updateLog(msg.getV());
             // If it's the entry I am working on
             if (msg.getV().getK() == k-1) {
@@ -253,6 +257,7 @@ public class Local {
         }
         // On receive check maxK
         else if (msg.getOp() == 5) {
+            System.out.println("receiving sanity-check msg");
             sendHolesVal(msg);
         }
         // On receive waiting messages
@@ -260,6 +265,7 @@ public class Local {
             count++;
             // Waiting for maxK messages (sanity checking)
             if (state == 6) {
+                System.out.println("receiving holesValue msg");
                 fixHoles(msg);
                 if (count >= Calendar.majority) {
                     timer.cancel();
@@ -270,6 +276,7 @@ public class Local {
             }
             // Waiting for promise messages
             if (state == 1) {
+                System.out.println("receiving promise msg");
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                     pVal = msg.getV();
@@ -285,6 +292,7 @@ public class Local {
             }
             // Waiting for ack messages
             if (state == 3 && count >= Calendar.majority) {
+                System.out.println("receiving ack msg");
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
                 end_paxos();
