@@ -77,6 +77,8 @@ public class Calendar {
                     local.viewLog();
                 } else if (command.equals("exit")) {
                     break;
+                } else if (command.equals("init")){
+                    local.init(args[0]);
                 } else {
                     Event proposal = client.parse_command(command);
                     if (proposal != null && local.checkValidity(proposal) ) {

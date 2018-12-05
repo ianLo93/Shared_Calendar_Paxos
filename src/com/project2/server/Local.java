@@ -35,6 +35,11 @@ public class Local {
             this.k = (Integer) restore.readObject();
             this.log = (ArrayList<Event>) restore.readObject();
             this.siteId = siteId_;
+            this.accNum = (String) restore.readObject();
+            this.accVal = (Event) restore.readObject();
+            this.maxPrepare = (String) restore.readObject();
+            this.propose = (Integer) restore.readObject();
+
             // TODO: WRITE & READ ACCNUM, ACCVAL
             restore.close();
 
@@ -58,13 +63,14 @@ public class Local {
             setTimer(2);
 
         } catch (Exception i) {
-            maxPrepare = "0";
-            accNum = null;
-            accVal = null;
-            pVal = null;
-            pNum = null;
-            propose = 1;
-            siteId = siteId_;
+            init(siteId_);
+//            maxPrepare = "0";
+//            accNum = null;
+//            accVal = null;
+//            pVal = null;
+//            pNum = null;
+//            propose = 1;
+//            siteId = siteId_;
 
         }
     }
@@ -339,6 +345,10 @@ public class Local {
 
             save.writeObject(k);
             save.writeObject(log);
+            save.writeObject(accNum);
+            save.writeObject(accVal);
+            save.writeObject(maxPrepare);
+            save.writeObject(propose);
             save.close();
         } catch (IOException i) {
             System.out.println("save state failed");
@@ -362,6 +372,18 @@ public class Local {
             System.out.println("parse_time failed");
             return -1;
         }
+    }
+    public void init(String siteid_) {
+        maxPrepare = "0";
+        accNum = null;
+        accVal = null;
+        pVal = null;
+        pNum = null;
+        propose = 1;
+        siteId = siteid_;
+        schedule = new ArrayList<Appointment>();
+        log = new ArrayList<Event>();
+        k = 0;
     }
 
     class Timeout extends TimerTask {
