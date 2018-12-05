@@ -4,6 +4,7 @@ import com.project2.app.Calendar;
 import com.project2.client.Client;
 import com.project2.client.Message;
 
+import java.sql.SQLOutput;
 import java.util.*;
 import java.io.*;
 
@@ -31,15 +32,26 @@ public class Local {
             ObjectInputStream restore = new ObjectInputStream(saveFile);
 
             this.k = (Integer) restore.readObject();
-            this.schedule = (ArrayList<Appointment>) restore.readObject();
             this.log = (ArrayList<Event>) restore.readObject();
             this.siteId = siteId_;
             restore.close();
 
-            int reconstructK = 5*(k/5)+1;
-            while (reconstructK <= k){
-                updateSchedule(log.get(reconstructK));
+            try{
+                saveFile = new FileInputStream("checkpoint.sav");
+                restore = new ObjectInputStream(saveFile);
+
+                this.schedule = (ArrayList<Appointment>) restore.readObject();
+                restore.close();
+
+                int reconstructK = 5*(k/5)+1;
+                while (reconstructK <= k){
+                    updateSchedule(log.get(reconstructK));
+                }
             }
+            catch (Exception i){
+                System.out.println("load checkpoint.sav failed");
+            }
+
             sanity_check();
 
         } catch (Exception i) {
@@ -83,7 +95,7 @@ public class Local {
         while (k < log.size() && log.get(k) != null) {
             updateSchedule(log.get(k));
             k++;
-            writeCheckPoint();
+            saveState();
         }
     }
 
@@ -264,8 +276,7 @@ public class Local {
         else return;
     }
 
-    private void writeCheckPoint(){
-        if (k % 5 != 0) return;
+    private void saveCheckPoint(){
         try {
             FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
             ObjectOutputStream save = new ObjectOutputStream(saveFile);
@@ -275,7 +286,22 @@ public class Local {
             save.writeObject(log);
             save.close();
         } catch (IOException i) {
-            System.out.println("save_state() failed");
+            System.out.println("save checkpoint failed");
+            System.out.println(i);
+        }
+    }
+
+    private void saveState(){
+        if (k % 5 == 0) saveCheckPoint();
+        try {
+            FileOutputStream saveFile = new FileOutputStream("state.sav");
+            ObjectOutputStream save = new ObjectOutputStream(saveFile);
+
+            save.writeObject(k);
+            save.writeObject(log);
+            save.close();
+        } catch (IOException i) {
+            System.out.println("save state failed");
             System.out.println(i);
         }
     }
