@@ -50,7 +50,8 @@ public class Server extends Thread {
                 // Input stream close
                 objIn.close();
 //                System.out.println(recvMsg);
-                if (recvMsg.getV() != null) local.handle_msg(recvMsg);
+
+                local.handle_msg(recvMsg);
             }  catch (IOException i) {
                 System.out.println(i);
                 running = false;

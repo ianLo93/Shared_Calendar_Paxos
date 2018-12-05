@@ -86,6 +86,7 @@ public class Client {
     public void sendTo(String siteid_, int port_, Message msg_) {
         Sender sd = new Sender(msg_, siteid_, port_);
         sd.start();
+//        System.out.println("sent message op = "+msg_.getOp());
     }
 
     private String[] valid_users(String[] participants) {

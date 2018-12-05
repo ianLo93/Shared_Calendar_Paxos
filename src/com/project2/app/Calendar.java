@@ -77,7 +77,8 @@ public class Calendar {
                     local.viewLog();
                 } else {
                     Event proposal = client.parse_command(command);
-                    if (proposal != null) {
+                    if (proposal != null && local.checkValidity(proposal) ) {
+                        System.out.println("here");
                         if (local.state == -1) {
                             local.sanity_check();
                             local.setTimer(2);

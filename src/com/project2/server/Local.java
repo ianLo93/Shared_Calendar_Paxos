@@ -58,7 +58,7 @@ public class Local {
             setTimer(2);
 
         } catch (Exception i) {
-            maxPrepare = null;
+            maxPrepare = "0";
             accNum = null;
             accVal = null;
             pVal = null;
@@ -102,10 +102,16 @@ public class Local {
     }
 
     private void updateSchedule(Event e){
-        if (e.getOp().equals("Schedule")) { schedule.add(e.getAppointment()); }
+        if (e.getOp().equals("schedule")) { schedule.add(e.getAppointment()); }
         else {
             if (checkExist(e.getAppointment())) schedule.remove(e.getAppointment());
         }
+    }
+
+    public boolean checkValidity(Event e){
+        System.out.println("checking validity");
+        if (e.getOp().equals("schedule")) return !checkConflicts(e.getAppointment());
+        else return checkExist(e.getAppointment());
     }
 
     private boolean checkExist(Appointment a){
@@ -136,6 +142,8 @@ public class Local {
     }
 
     private boolean checkConflicts(Appointment upcoming){
+        if (schedule.contains(upcoming)) return true;
+
         String [] participants = upcoming.getParticipants();
         HashSet<String> dict = new HashSet<>(Arrays.asList(participants));
 
@@ -210,8 +218,9 @@ public class Local {
     }
 
     void handle_msg(Message msg) {
+//        System.out.println("new message: "+msg.getOp());
         int port = Calendar.phonebook.get(msg.getSenderId())[1];
-        if (msg.getV().getK() > k) {
+        if (msg.getV() != null && msg.getV().getK() > k) {
             if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
             if (state != 6) {
                 sanity_check();
@@ -219,7 +228,7 @@ public class Local {
             }
         }
         // On receive prepare(m)
-        if (msg.getV().getK() >= k && msg.getOp() == 0) {
+        if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 0) {
             System.out.println("receiving prepare msg");
             if (mCompare(msg.getM(), maxPrepare) > 0) {
 //                System.out.println(msg);
@@ -229,7 +238,7 @@ public class Local {
             }
         }
         // On receive accept(accNum, accVal)
-        else if (msg.getV().getK() >= k && msg.getOp() == 2) {
+        else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 2) {
             System.out.println("receiving accept msg");
             if (mCompare(msg.getM(), maxPrepare) >= 0) {
                 maxPrepare = msg.getM();
@@ -240,7 +249,7 @@ public class Local {
             }
         }
         // On receive commit(v)
-        else if (msg.getV().getK() >= k && msg.getOp() == 4) {
+        else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 4) {
             System.out.println("receiving commit msg");
             updateLog(msg.getV());
             // If it's the entry I am working on
@@ -264,6 +273,7 @@ public class Local {
         }
         // On receive waiting messages
         else if (msg.getOp() == state) {
+            System.out.println("message same as state");
             count++;
             // Waiting for maxK messages (sanity checking)
             if (state == 6) {
@@ -294,7 +304,7 @@ public class Local {
                 }
             }
             // Waiting for ack messages
-            if (state == 3 && count >= Calendar.majority) {
+            else if (state == 3 && count >= Calendar.majority) {
                 System.out.println("receiving ack msg");
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
