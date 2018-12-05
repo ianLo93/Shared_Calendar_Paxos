@@ -4,7 +4,6 @@ import com.project2.app.Calendar;
 import com.project2.client.Client;
 import com.project2.client.Message;
 
-import java.sql.SQLOutput;
 import java.util.*;
 import java.io.*;
 
@@ -45,13 +44,15 @@ public class Local {
                 this.schedule = (ArrayList<Appointment>) restore.readObject();
                 restore.close();
 
-                int reconstructK = 5*(k/5)+1;
-                while (reconstructK <= k){
-                    updateSchedule(log.get(reconstructK));
-                }
+
             }
             catch (Exception i){
                 System.out.println("load checkpoint.sav failed");
+            }
+
+            int reconstructK = 5*(k/5)+1;
+            while (reconstructK <= k){
+                updateSchedule(log.get(reconstructK));
             }
 
             sanity_check();
@@ -244,7 +245,7 @@ public class Local {
                 if (state != -1 && pVal != null && !msg.getV().equals(pVal))
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                 end_paxos();
-                if (state != 6 && !msg_set.isEmpty()) {
+                if (!msg_set.isEmpty()) {
                     sanity_check();
                     setTimer(2);
                 }
@@ -287,7 +288,7 @@ public class Local {
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
                 end_paxos();
-                if (state != 6 && !msg_set.isEmpty()) {
+                if (!msg_set.isEmpty()) {
                     sanity_check();
                     setTimer(2);
                 }
@@ -354,10 +355,14 @@ public class Local {
             } else {
                 numRetries = 0;
                 end_paxos();
+                timer.cancel();
+                if (!msg_set.isEmpty()) {
+                    sanity_check();
+                    setTimer(2);
+                }
                 if (state != 6)
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+
                             pVal.getAppointment().getName()+".");
-                timer.cancel();
             }
         }
     }
