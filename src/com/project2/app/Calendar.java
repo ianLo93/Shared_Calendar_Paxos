@@ -42,9 +42,9 @@ public class Calendar {
     public static void main(String args[]) {
 
         // Read system site infos and make phonebook
-        readFile("knownhosts_udp.txt");
+//        readFile("knownhosts_udp.txt");
 
-//        phonebook.put("localhost", new int[]{1, 8000});
+        phonebook.put("localhost", new int[]{1, 8000});
         majority = phonebook.size()/2+1;
 
         if(args.length != 1 || !Calendar.phonebook.containsKey(args[0])){
@@ -60,7 +60,6 @@ public class Calendar {
         server.setDaemon(true);
         server.start();
         Client client = new Client(args[0]);
-        Local local = new Local(args[0]);
 
         Scanner sc = new Scanner(System.in);
         String command;
@@ -70,25 +69,24 @@ public class Calendar {
 //                if (!server.getStatus()) break;
                 command = sc.nextLine();
                 if (command.equals("view")) {
-                    local.view();
+                    client.sendTo(args[0], port, new Message(
+                            7, args[0], command, null));
                 } else if (command.equals("myview")) {
-                    local.myView();
+                    client.sendTo(args[0], port, new Message(
+                            7, args[0], command, null));
                 } else if (command.equals("log")) {
-                    local.viewLog();
+                    client.sendTo(args[0], port, new Message(
+                            7, args[0], command, null));
                 } else if (command.equals("exit")) {
                     break;
                 } else if (command.equals("init")){
-                    local.init(args[0]);
+                    client.sendTo(args[0], port, new Message(
+                            7, args[0], command, null));
                 } else {
                     Event proposal = client.parse_command(command);
-                    if (proposal != null  ) {
-                        if (!local.checkValidity(proposal))
-                            System.out.println("Unable to"+proposal.getOp()+"meeting"+proposal.getAppointment().getName());
-                        if (local.state == -1) {
-                            local.sanity_check();
-                            local.setTimer(2);
-                        }
-                        local.msg_set.add(proposal);
+                    if ( proposal != null  ) {
+                        client.sendTo(args[0], port, new Message(
+                                7, args[0], null, proposal));
                     }
                 }
             } catch (Exception i) {

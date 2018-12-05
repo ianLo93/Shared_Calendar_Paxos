@@ -14,7 +14,7 @@ public class Server extends Thread {
     public Server(String siteid, int port_) {
         try {
             this.serverSocket = new DatagramSocket(port_);
-            this.local = new Local(siteid);
+            this.local = new Local(siteid, false);
             this.running = false;
         } catch (SocketException s) {
             System.out.println(s);
@@ -51,7 +51,42 @@ public class Server extends Thread {
                 objIn.close();
 //                System.out.println(recvMsg);
 
-                local.message_handler(recvMsg);
+//                if (!Local.checkValidity(proposal))
+//                    System.out.println("Unable to"+proposal.getOp()+"meeting"+
+//                            proposal.getAppointment().getName()+".");
+//                if (Local.state == -1) {
+//                    Local.sanity_check();
+//                    Local.setTimer(2);
+//                }
+//                Local.msg_set.add(proposal);
+//
+                if (recvMsg.getOp() == 7) {
+                    if (recvMsg.getM() == null && recvMsg.getV() != null) {// proposal
+                        if (!local.checkValidity(recvMsg.getV()))
+                            System.out.println("Unable to"+recvMsg.getV().getOp()+"meeting"+
+                            recvMsg.getV().getAppointment().getName()+".");
+                        if (local.state == -1){
+                            local.sanity_check();
+;                           local.setTimer(2);
+                        }
+                        local.msg_set.add(recvMsg.getV());
+                    }
+                    else if (recvMsg.getM().equals("view")){
+                        local.view();
+                    }
+                    else if (recvMsg.getM().equals("myview")){
+                        local.myView();
+                    }
+                    else if (recvMsg.getM().equals("log")){
+                        local.viewLog();
+                    }
+                    else if (recvMsg.getM().equals("init")){
+                        local.init(recvMsg.getSenderId());
+                    }
+                }
+                 else {
+                     local.message_handler(recvMsg);
+                }
             }  catch (IOException i) {
                 System.out.println(i);
                 running = false;

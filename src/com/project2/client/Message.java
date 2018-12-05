@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Message implements Serializable {
 
     private int operation; // 0: prepare, 1: promise, 2: accept, 3: ack, 4: commit,
-    // 5: fill holes, 6: recover holes
+    // 5: fill holes, 6: recover holes, 7: send to myself
     private ArrayList<Event> plog;
 
     private String senderId;

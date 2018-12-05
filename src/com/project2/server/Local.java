@@ -28,48 +28,50 @@ public class Local {
     private int count;
     private int propose;
 
-    public Local(String siteId_) {
-        try {
-            FileInputStream saveFile = new FileInputStream("state.sav");
-            ObjectInputStream restore = new ObjectInputStream(saveFile);
+    public Local(String siteId_, boolean dummy) {
+        if (!dummy) {
+            try {
+                FileInputStream saveFile = new FileInputStream("state.sav");
+                ObjectInputStream restore = new ObjectInputStream(saveFile);
 
-            this.k = (Integer) restore.readObject();
-            this.log = (ArrayList<Event>) restore.readObject();
-            this.siteId = siteId_;
-            this.accNum = (String) restore.readObject();
-            this.accVal = (Event) restore.readObject();
-            this.maxPrepare = (String) restore.readObject();
-            this.propose = (Integer) restore.readObject();
+                this.k = (Integer) restore.readObject();
+                this.log = (ArrayList<Event>) restore.readObject();
+                this.siteId = siteId_;
+                this.accNum = (String) restore.readObject();
+                this.accVal = (Event) restore.readObject();
+                this.maxPrepare = (String) restore.readObject();
+                this.propose = (Integer) restore.readObject();
 
-            // TODO: WRITE & READ ACCNUM, ACCVAL
-            restore.close();
-            System.out.println("Load state.sav");
-            System.out.println("k value: "+k);
-            System.out.println("log length"+log.size());
-
-            try{
-                saveFile = new FileInputStream("checkpoint.sav");
-                restore = new ObjectInputStream(saveFile);
-
-                this.schedule = (ArrayList<Appointment>) restore.readObject();
+                // TODO: WRITE & READ ACCNUM, ACCVAL
                 restore.close();
+                System.out.println("Load state.sav");
+                System.out.println("k value: " + k);
+                System.out.println("log length" + log.size());
+
+                try {
+                    saveFile = new FileInputStream("checkpoint.sav");
+                    restore = new ObjectInputStream(saveFile);
+
+                    this.schedule = (ArrayList<Appointment>) restore.readObject();
+                    restore.close();
 
 
-            }
-            catch (Exception i){
+                } catch (Exception i) {
 //                System.out.println("load checkpoint.sav failed");
+                }
+
+                int reconstructK = 5 * (k / 5) + 1;
+                while (reconstructK < k) {
+                    updateSchedule(log.get(reconstructK));
+                    reconstructK++;
+                }
+
+                sanity_check();
+                setTimer(2);
+
+            } catch (Exception i) {
+                init(siteId_);
             }
-
-            int reconstructK = 5*(k/5)+1;
-            while (reconstructK < k){
-                updateSchedule(log.get(reconstructK));
-            }
-
-            sanity_check();
-            setTimer(2);
-
-        } catch (Exception i) {
-            init(siteId_);
         }
     }
 
@@ -225,8 +227,8 @@ public class Local {
     private void clearSite() {
         accVal = null;
         accNum = null;
-        pVal = null;
-        pNum = null;
+//        pVal = null;
+//        pNum = null;
     }
 
     class Acceptor extends Thread {
@@ -320,7 +322,10 @@ public class Local {
                         pVal = msg_set.remove();
                         pVal.setK(k);
                         if (winner) accept_paxos();
-                        else start_paxos(pVal);
+                        else {
+                            start_paxos(pVal);
+                            setTimer(2);
+                        }
                     }
                 }
             }
@@ -426,20 +431,21 @@ public class Local {
             if (numRetries < 2) {
                 numRetries++;
                 if (state == 6) sanity_check();
-                else start_paxos(pVal);
+                else if (state != -1) start_paxos(pVal);
             } else {
                 numRetries = 0;
                 clearSite();
                 state = -1;
                 timer.cancel();
-                if (!msg_set.isEmpty()) {
-                    sanity_check();
-                    setTimer(2);
-                }
+
                 if (state != 6) {
                     System.out.println(362);
                     System.out.println("Unable to " + pVal.getOp() + " meeting " +
                             pVal.getAppointment().getName() + ".");
+                }
+                if (!msg_set.isEmpty()) {
+                    sanity_check();
+                    setTimer(2);
                 }
             }
         }
