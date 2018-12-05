@@ -218,7 +218,6 @@ public class Local {
     }
 
     void handle_msg(Message msg) {
-//        System.out.println("new message: "+msg.getOp());
         int port = Calendar.phonebook.get(msg.getSenderId())[1];
         if (msg.getV() != null && msg.getV().getK() > k) {
             if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
@@ -231,7 +230,6 @@ public class Local {
         if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 0) {
             System.out.println("receiving prepare msg");
             if (mCompare(msg.getM(), maxPrepare) > 0) {
-//                System.out.println(msg);
                 maxPrepare = msg.getM();
                 new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
                         1, siteId, accNum, accVal));
