@@ -40,7 +40,7 @@ public class Sender extends Thread {
 
             // Send packets
             clientSocket.send(packet);
-            clientSocket.close();
+//            clientSocket.close();
         }
         catch (IOException i) {
             System.out.println(i);

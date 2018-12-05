@@ -30,7 +30,7 @@ public class Server extends Thread {
         while (running) {
             try {
                 // Create datagram packet holder and send received msg to buf
-                byte[] buf = new byte[2048];
+                byte[] buf = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 serverSocket.receive(packet);
 
@@ -49,7 +49,7 @@ public class Server extends Thread {
                 }
                 // Input stream close
                 objIn.close();
-
+//                System.out.println(recvMsg);
                 if (recvMsg.getV() != null) local.handle_msg(recvMsg);
             }  catch (IOException i) {
                 System.out.println(i);

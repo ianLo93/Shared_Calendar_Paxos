@@ -43,8 +43,6 @@ public class Local {
 
                 this.schedule = (ArrayList<Appointment>) restore.readObject();
                 restore.close();
-
-
             }
             catch (Exception i){
                 System.out.println("load checkpoint.sav failed");
@@ -59,14 +57,13 @@ public class Local {
             setTimer(2);
 
         } catch (Exception i) {
-            maxPrepare = null;
-            accNum = null;
-            accVal = null;
-            pVal = null;
-            pNum = null;
-            propose = 1;
-            sanity_check();
-            setTimer(2);
+            this.siteId = siteId_;
+            this.maxPrepare = "0";
+            this.accNum = null;
+            this.accVal = null;
+            this.pVal = null;
+            this.pNum = null;
+            this.propose = 1;
         }
     }
 
@@ -222,6 +219,7 @@ public class Local {
         // On receive prepare(m)
         if (msg.getV().getK() >= k && msg.getOp() == 0) {
             if (mCompare(msg.getM(), maxPrepare) > 0) {
+//                System.out.println(msg);
                 maxPrepare = msg.getM();
                 new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
                         1, siteId, accNum, accVal));
@@ -242,8 +240,11 @@ public class Local {
             updateLog(msg.getV());
             // If it's the entry I am working on
             if (msg.getV().getK() == k-1) {
-                if (state != -1 && pVal != null && !msg.getV().equals(pVal))
-                    System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
+                if (state != -1 && pVal != null && !msg.getV().equals(pVal)) {
+//                    System.out.println(243);
+                    System.out.println("Unable to " + pVal.getOp() + " meeting " +
+                            pVal.getAppointment().getName() + ".");
+                }
                 end_paxos();
                 if (!msg_set.isEmpty()) {
                     sanity_check();
@@ -269,8 +270,16 @@ public class Local {
                 }
             }
             // Waiting for promise messages
-            if (state == 1) {
+            else if (state == 1) {
+//                if (msg.getV() == null) System.out.println("it's null");
+//                if (!msg.getV().equals(pVal)) {
+//                    System.out.println(msg.getV());
+//                    System.out.println(pVal);
+//                }
+//                System.out.println(msg.getV());
+                System.out.println(msg);
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
+                    System.out.println(274);
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                     pVal = msg.getV();
                 }
@@ -284,7 +293,7 @@ public class Local {
                 }
             }
             // Waiting for ack messages
-            if (state == 3 && count >= Calendar.majority) {
+            else if (state == 3 && count >= Calendar.majority) {
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
                 end_paxos();
@@ -360,9 +369,11 @@ public class Local {
                     sanity_check();
                     setTimer(2);
                 }
-                if (state != 6)
-                    System.out.println("Unable to "+pVal.getOp()+" meeting "+
-                            pVal.getAppointment().getName()+".");
+                if (state != 6) {
+                    System.out.println(362);
+                    System.out.println("Unable to " + pVal.getOp() + " meeting " +
+                            pVal.getAppointment().getName() + ".");
+                }
             }
         }
     }

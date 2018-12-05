@@ -58,6 +58,7 @@ public class Appointment implements Serializable {
     public String toString(){
         StringBuilder m = new StringBuilder(name + " " + day+ " " + start + " " + end + " ");
         int i=0;
+        System.out.println(participants[i]);
         for (; i<participants.length-1; i++){
             m.append(participants[i]+",");
         }
