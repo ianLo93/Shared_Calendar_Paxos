@@ -2,6 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="16faab69-14dc-49a6-b255-59a126ecbc2d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Acceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Acceptor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Timeout.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Timeout.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/project2/server/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Event.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/project2/server/Local.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Local.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -31,12 +36,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="1055" />
+          <entry key="java" value="1559" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="1055" />
+          <entry key="JAVA" value="1559" />
         </counts>
       </usages-collector>
     </session>
@@ -58,8 +63,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/app/Calendar.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="311">
-              <caret line="94" column="34" lean-forward="true" selection-start-line="94" selection-start-column="34" selection-end-line="94" selection-end-column="34" />
+            <state relative-caret-position="353">
+              <caret line="87" column="46" lean-forward="true" selection-start-line="87" selection-start-column="46" selection-end-line="87" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -67,8 +72,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-170">
-              <caret line="308" column="35" selection-start-line="308" selection-start-column="35" selection-end-line="308" selection-end-column="35" />
+            <state relative-caret-position="336">
+              <caret line="312" column="49" lean-forward="true" selection-start-line="312" selection-start-column="49" selection-end-line="312" selection-end-column="49" />
               <folding>
                 <element signature="e#2908#2909#0" expanded="true" />
                 <element signature="e#2965#2966#0" expanded="true" />
@@ -91,8 +96,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/server/Appointment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1239">
-              <caret line="60" selection-start-line="60" selection-end-line="60" />
+            <state relative-caret-position="84">
+              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -100,8 +105,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/client/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-189">
-              <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
+            <state relative-caret-position="462">
+              <caret line="46" column="29" lean-forward="true" selection-start-line="46" selection-start-column="29" selection-end-line="46" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -127,8 +132,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/project2/server/Event.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="882">
-              <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
+            <state relative-caret-position="381">
+              <caret line="22" column="13" lean-forward="true" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -169,7 +174,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/com/project2/server/Event.java" />
         <option value="$PROJECT_DIR$/src/com/project2/client/Message.java" />
         <option value="$PROJECT_DIR$/src/com/project2/server/Appointment.java" />
         <option value="$PROJECT_DIR$/src/com/project2/client/Client.java" />
@@ -177,6 +181,7 @@
         <option value="$PROJECT_DIR$/src/com/project2/server/Reminder.java" />
         <option value="$PROJECT_DIR$/src/com/project2/server/Server.java" />
         <option value="$PROJECT_DIR$/src/com/project2/app/Calendar.java" />
+        <option value="$PROJECT_DIR$/src/com/project2/server/Event.java" />
         <option value="$PROJECT_DIR$/src/com/project2/server/Local.java" />
       </list>
     </option>
@@ -247,7 +252,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544042006091" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544046513306" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -299,7 +304,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14895000" />
+    <option name="totallyTimeSpent" value="18524000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1513" height="973" extended-state="6" />
@@ -342,13 +347,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/project2/server/Event.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="882">
-          <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/client/Sender.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="542">
@@ -363,24 +361,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/project2/client/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-189">
-          <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/Reminder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
           <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/project2/app/Calendar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="311">
-          <caret line="94" column="34" lean-forward="true" selection-start-line="94" selection-start-column="34" selection-end-line="94" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -391,10 +375,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/project2/server/Appointment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/project2/client/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="46" column="29" lean-forward="true" selection-start-line="46" selection-start-column="29" selection-end-line="46" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/project2/server/Event.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="22" column="13" lean-forward="true" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/project2/app/Calendar.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="87" column="46" lean-forward="true" selection-start-line="87" selection-start-column="46" selection-end-line="87" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-170">
-          <caret line="308" column="35" selection-start-line="308" selection-start-column="35" selection-end-line="308" selection-end-column="35" />
+        <state relative-caret-position="336">
+          <caret line="312" column="49" lean-forward="true" selection-start-line="312" selection-start-column="49" selection-end-line="312" selection-end-column="49" />
           <folding>
             <element signature="e#2908#2909#0" expanded="true" />
             <element signature="e#2965#2966#0" expanded="true" />

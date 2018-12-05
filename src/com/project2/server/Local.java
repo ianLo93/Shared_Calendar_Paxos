@@ -17,6 +17,7 @@ public class Local {
     public static Queue<Event> msg_set = new LinkedList<>();
     private static Timer timer; // Set timeout periods
     private static int numRetries = 0;
+    private static boolean winner = false;
     private String siteId;
 
     private String maxPrepare;
@@ -189,7 +190,6 @@ public class Local {
         }
 
         return Integer.toString(propose) +pos_i;
-
     }
 
     public void sanity_check() {
@@ -204,7 +204,14 @@ public class Local {
         count = 0;
         pVal = proposal;
         pNum = prepareM();
+        proposal.setK(k);
         new Client(siteId).bcast(0, pNum, pVal);
+    }
+
+    private void accept_paxos() {
+        state = 3;
+        count = 0;
+        new Client(siteId).bcast(2, pNum, pVal);
     }
 
     private void clearSite() {
@@ -225,13 +232,6 @@ public class Local {
         @Override
         public void run() {
             int port = Calendar.phonebook.get(msg.getSenderId())[1];
-            if (msg.getV() != null && msg.getV().getK() > k) {
-                if (accVal != null && msg.getV().getK() > accVal.getK()) clearSite();
-                if (state != 6) {
-                    sanity_check();
-                    setTimer(2);
-                }
-            }
             // On receive prepare(m)
             if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 0) {
                 System.out.println("receiving prepare msg");
@@ -261,6 +261,13 @@ public class Local {
     }
 
     void message_handler(Message msg) {
+        if (msg.getV() != null && msg.getV().getK() > k) {
+            if (accVal != null && msg.getV().getK() > accVal.getK()) clearSite();
+            if (state != 6) {
+                sanity_check();
+                setTimer(2);
+            }
+        }
         // Acceptor
         if (msg.getOp() == 0 || msg.getOp() == 2 || msg.getOp() == 5) {
             Acceptor acc = new Acceptor(msg);
@@ -270,12 +277,12 @@ public class Local {
         // Learner: On receive commit(v)
         else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 4) {
             System.out.println("receiving commit msg");
-            if (msg.getV().getK() > k && state != 6) sanity_check();
             updateLog(msg.getV());
             clearSite();
+            winner = msg.getSenderId().equals(siteId);
             // If it's the entry I am working on
             if (msg.getV().getK() == k-1) {
-                // Retry or unable
+                // TODO:Retry or unable
                 if (state != -1 && pVal != null && !msg.getV().equals(pVal)) {
                     System.out.println("Unable to " + pVal.getOp() + " meeting " +
                             pVal.getAppointment().getName() + ".");
@@ -300,22 +307,25 @@ public class Local {
                     timer.cancel();
                     numRetries = 0;
                     if (msg_set.isEmpty()) state = -1;
-                    else start_paxos(msg_set.remove());
+                    else {
+                        pVal = msg_set.remove();
+                        pVal.setK(k);
+                        if (winner) accept_paxos();
+                        else start_paxos(pVal);
+                    }
                 }
             }
             // Waiting for promise messages
             else if (state == 1) {
                 System.out.println("receiving promise msg");
-                // Retry or unable?
+                // TODO：Retry or unable?
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                     pVal = msg.getV();
                 }
                 if (count >= Calendar.majority) {
                     timer.cancel();
-                    state = 3;
-                    count = 0;
-                    new Client(siteId).bcast(2, pNum, pVal);
+                    accept_paxos();
                     setTimer(2);
                 }
             }
@@ -325,10 +335,13 @@ public class Local {
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
                 clearSite();
+                winner = true;
                 if (!msg_set.isEmpty()) {
-                    sanity_check();
+                    pVal = msg_set.remove();
+                    pVal.setK(k);
+                    accept_paxos();
                     setTimer(2);
-                } else state = -1;
+                }
             }
         }
         else return;
