@@ -18,6 +18,8 @@ public class Event implements Serializable {
     public int getK() { return k; }
     public Appointment getAppointment() { return meeting; }
 
+    public void setK(int k_) { this.k = k_; }
+
     @Override
     public boolean equals(Object obj) {
         // checking if both the object references are

@@ -75,6 +75,8 @@ public class Calendar {
                     local.myView();
                 } else if (command.equals("log")) {
                     local.viewLog();
+                } else if (command.equals("exit")) {
+                    break;
                 } else if (command.equals("init")){
                     local.init(args[0]);
                 } else {
