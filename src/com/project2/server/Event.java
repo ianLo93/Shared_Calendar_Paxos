@@ -38,8 +38,8 @@ public class Event implements Serializable {
 
     @Override
     public String toString(){
-        StringBuilder m = new StringBuilder(op + " "+meeting);
-        return m.toString();
+        String m = op + " "+meeting;
+        return m;
     }
 
 }

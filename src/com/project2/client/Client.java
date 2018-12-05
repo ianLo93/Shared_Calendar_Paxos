@@ -43,6 +43,7 @@ public class Client {
                 System.out.println("SCHEDULE ERROR: No Valid User Provided");
                 return null;
             }
+//            System.out.println(46+": "+participants[0]);
             return new Event(Local.k,  cmds[0], cmds[1], cmds[2], cmds[3], cmds[4], participants);
         } else if (cmds[0].equals("cancel")) {
             if (cmds.length != 2) {

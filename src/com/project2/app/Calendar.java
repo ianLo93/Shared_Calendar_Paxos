@@ -42,9 +42,9 @@ public class Calendar {
     public static void main(String args[]) {
 
         // Read system site infos and make phonebook
-        readFile("knownhosts_udp.txt");
+//        readFile("knownhosts_udp.txt");
 
-//        phonebook.put("localhost", new int[]{1, 8000});
+        phonebook.put("localhost", new int[]{1, 8000});
         majority = phonebook.size()/2+1;
 
         if(args.length != 1 || !Calendar.phonebook.containsKey(args[0])){
@@ -78,7 +78,10 @@ public class Calendar {
                 } else {
                     Event proposal = client.parse_command(command);
                     if (proposal != null) {
-                        if (local.state == -1) local.sanity_check();
+                        if (local.state == -1) {
+                            local.sanity_check();
+                            local.setTimer(2);
+                        }
                         local.msg_set.add(proposal);
                     }
                 }

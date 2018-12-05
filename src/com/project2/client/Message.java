@@ -14,7 +14,6 @@ public class Message implements Serializable {
     private String senderId;
     private String m; // Prepare number/accepted number
     private Event v; // Proposed value/accepted value
-    private int posK;
 
     public Message(int op_, String sender_, String m_, Event v_) {
         this.plog = new ArrayList<>();
@@ -44,4 +43,11 @@ public class Message implements Serializable {
     public ArrayList<Event> getPlog() { return this.plog; }
 
     public void setPlog(ArrayList<Event> plog_) { this.plog = plog_; }
+
+    @Override
+    public String toString() {
+        String s = "op: "+Integer.toString(operation)+"\n"+"sender: "+senderId+"\n"
+                +"m: "+m+"\n";
+        return s;
+    }
 }
