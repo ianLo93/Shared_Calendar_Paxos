@@ -75,9 +75,9 @@ public class Client {
     }
 
     public void bcast(int op, String m_, Event proposal) {
-        for (Map.Entry<String, Integer> entry: Calendar.phonebook.entrySet()) {
+        for (Map.Entry<String, int[]> entry: Calendar.phonebook.entrySet()) {
             Sender sd = new Sender(new Message(op, siteId, m_, proposal),
-                    entry.getKey(), entry.getValue());
+                    entry.getKey(), entry.getValue()[1]);
             sd.start();
         }
     }

@@ -12,8 +12,9 @@ import com.project2.server.Event;
 
 public class Calendar {
 
-    public static HashMap<String, Integer> phonebook = new HashMap<>();
+    public static HashMap<String, int[]> phonebook = new HashMap<>();
     public static int majority;
+    public static int index = 0;
 //    public static Semaphore mutex = new Semaphore(1);
 
     public static void readFile(String path) {
@@ -22,15 +23,16 @@ public class Calendar {
             BufferedReader buffer = new BufferedReader(new FileReader(file));
             String line;
 
-            int index = 0;
+
             while ((line = buffer.readLine()) != null) {
                 line = line.trim();
                 String[] socket_info = line.split(" ");
                 String siteid = socket_info[0];
                 int port = Integer.parseInt(socket_info[1]);
-                phonebook.put(siteid, port);
+                phonebook.put(siteid, new int[]{index, port});
                 index++;
             }
+            index--;
         } catch (IOException i) {
             System.out.println(i);
             System.exit(1);
@@ -42,7 +44,7 @@ public class Calendar {
         // Read system site infos and make phonebook
 //        readFile("knownhosts_udp.txt");
 
-        phonebook.put("localhost", 8000);
+        phonebook.put("localhost", new int[]{1, 8000});
         majority = phonebook.size()/2+1;
 
         if(args.length != 1 || !Calendar.phonebook.containsKey(args[0])){
@@ -52,7 +54,7 @@ public class Calendar {
         }
 
         // Get port number (args[0] stands for site ID)
-        int port = Calendar.phonebook.get(args[0]);
+        int port = Calendar.phonebook.get(args[0])[1];
 
         Server server = new Server(args[0], port);
         server.setDaemon(true);
