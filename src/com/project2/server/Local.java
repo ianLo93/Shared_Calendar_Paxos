@@ -42,6 +42,9 @@ public class Local {
 
             // TODO: WRITE & READ ACCNUM, ACCVAL
             restore.close();
+            System.out.println("Load state.sav");
+            System.out.println("k value: "+k);
+            System.out.println("log length"+log.size());
 
             try{
                 saveFile = new FileInputStream("checkpoint.sav");
@@ -49,13 +52,15 @@ public class Local {
 
                 this.schedule = (ArrayList<Appointment>) restore.readObject();
                 restore.close();
+
+
             }
             catch (Exception i){
                 System.out.println("load checkpoint.sav failed");
             }
 
             int reconstructK = 5*(k/5)+1;
-            while (reconstructK <= k){
+            while (reconstructK < k){
                 updateSchedule(log.get(reconstructK));
             }
 
@@ -121,8 +126,10 @@ public class Local {
     }
 
     private boolean checkExist(Appointment a){
-        if (schedule.contains(a)) return true;
-        else return false;
+        for (Appointment a_: schedule){
+            if (a_.getName().equals(a.getName())) return true;
+        }
+        return false;
     }
 
 
@@ -138,11 +145,12 @@ public class Local {
         int startK = msg.getV().getK();
         ArrayList<Event> plog = new ArrayList<>();
         while (startK < k) {
+            System.out.println(log.get(startK));
             plog.add(log.get(startK));
+            startK++;
         }
         int port = Calendar.phonebook.get(msg.getSenderId())[1];
-        Message sendMsg = new Message(6, siteId, null, new Event(
-                k, null, null, null, null, null, null));
+        Message sendMsg = new Message(6, siteId, null, null);
         sendMsg.setPlog(plog);
         new Client(siteId).sendTo(msg.getSenderId(), port, sendMsg);
     }
@@ -224,7 +232,7 @@ public class Local {
     }
 
     void handle_msg(Message msg) {
-//        System.out.println("new message: "+msg.getOp());
+        System.out.println("new message: "+msg.getOp()+" from "+msg.getSenderId());
         int port = Calendar.phonebook.get(msg.getSenderId())[1];
         if (msg.getV() != null && msg.getV().getK() > k) {
             if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
@@ -279,7 +287,7 @@ public class Local {
         }
         // On receive waiting messages
         else if (msg.getOp() == state) {
-            System.out.println("message same as state");
+//            System.out.println("message same as state");
             count++;
             // Waiting for maxK messages (sanity checking)
             if (state == 6) {
@@ -383,8 +391,8 @@ public class Local {
         pNum = null;
         propose = 1;
         siteId = siteid_;
-        schedule = new ArrayList<Appointment>();
-        log = new ArrayList<Event>();
+        schedule.clear();
+        log.clear();
         k = 0;
     }
 
