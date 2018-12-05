@@ -1,10 +1,9 @@
 package com.project2.server;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
-public class Appointment {
+public class Appointment implements Serializable {
     private String name;
     private String day;
     private String start;

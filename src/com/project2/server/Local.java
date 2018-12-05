@@ -113,7 +113,8 @@ public class Local {
             plog.add(log.get(startK));
         }
         int port = Calendar.phonebook.get(msg.getSenderId());
-        Message sendMsg = new Message(6, siteId, null, null);
+        Message sendMsg = new Message(6, siteId, null, new Event(
+                k, null, null, null, null, null, null));
         sendMsg.setPlog(plog);
         new Client(siteId).sendTo(msg.getSenderId(), port, sendMsg);
     }
@@ -155,10 +156,12 @@ public class Local {
     }
 
     public void sanity_check() {
-        state = 6;
-        count = 0;
-        new Client(siteId).bcast(5, "-1", new Event(k,
-                null, null, null,null, null, null));
+        if (state != 6) {
+            state = 6;
+            count = 0;
+            new Client(siteId).bcast(5, "-1", new Event(k,
+                    null, null, null, null, null, null));
+        }
     }
 
     private void start_paxos(Event proposal) {
@@ -171,7 +174,6 @@ public class Local {
 
     private void end_paxos() {
         state = -1;
-        count = 0;
         accVal = null;
         accNum = null;
         pVal = null;
@@ -180,7 +182,10 @@ public class Local {
 
     void handle_msg(Message msg) {
         int port = Calendar.phonebook.get(msg.getSenderId());
-        if (msg.getV().getK() > k && state != 6) sanity_check();
+        if (msg.getV().getK() > k) {
+            if (accVal != null && msg.getV().getK() > accVal.getK()) end_paxos();
+            sanity_check();
+        }
         // On receive prepare(m)
         if (msg.getV().getK() >= k && msg.getOp() == 0) {
             if (mCompare(msg.getM(), maxPrepare) > 0) {
@@ -202,20 +207,17 @@ public class Local {
         // On receive commit(v)
         else if (msg.getV().getK() >= k && msg.getOp() == 4) {
             updateLog(msg.getV());
-            // If I'm it's the entry I am working on && I am not filling holes, I quit
-            if (msg.getV().getK() == k && state != 6) {
+            // If it's the entry I am working on
+            if (msg.getV().getK() == k-1) {
+                if (state != -1 && pVal != null && !msg.getV().equals(pVal))
+                    System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
+                end_paxos();
                 if (!msg_set.isEmpty()) sanity_check();
-                else {
-                    if (pVal != null && !msg.getV().equals(pVal))
-                        System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
-                    end_paxos();
-                }
             }
         }
         // On receive check maxK
         else if (msg.getOp() == 5) {
-            if (msg.getV().getK() < k) sendHolesVal(msg);
-            if (msg.getV().getK() > k && state != 6) sanity_check();
+            sendHolesVal(msg);
         }
         // On receive waiting messages
         else if (msg.getOp() == state) {
