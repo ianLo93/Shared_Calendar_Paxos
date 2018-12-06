@@ -42,12 +42,8 @@ public class Local {
                 this.accVal = (Event) restore.readObject();
                 this.maxPrepare = (String) restore.readObject();
                 this.propose = (Integer) restore.readObject();
-
+                clearSite();
                 restore.close();
-                System.out.println("Load state.sav");
-                System.out.println("k value: " + k);
-                System.out.println("log length" + log.size());
-
                 try {
                     saveFile = new FileInputStream("checkpoint.sav");
                     restore = new ObjectInputStream(saveFile);
@@ -235,6 +231,7 @@ public class Local {
         accVal = null;
         accNum = null;
         maxPrepare = "0";
+
 //        pVal = null;
 //        pNum = null;
     }
@@ -360,8 +357,9 @@ public class Local {
 //                System.out.println("receiving ack msg");
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
-                System.out.println("Meeting "+pVal.getAppointment().getName()+" "+pVal.getOp());
+                System.out.println("Meeting "+pVal.getAppointment().getName()+" "+pVal.getOp()+"ed.");
                 clearSite();
+                state = -1;
                 if (!msg_set.isEmpty()) {
                     pVal = msg_set.remove();
                     pVal.setK(k);
