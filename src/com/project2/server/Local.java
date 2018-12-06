@@ -17,7 +17,7 @@ public class Local {
     public static Queue<Event> msg_set = new LinkedList<>();
     private static Timer timer; // Set timeout periods
     private static int numRetries = 0;
-    private static boolean winner = false;
+    private static String winner = " ";
     private String siteId;
 
     private String maxPrepare;
@@ -60,7 +60,7 @@ public class Local {
 //                System.out.println("load checkpoint.sav failed");
                 }
 
-                int reconstructK = 5 * (k / 5) + 1;
+                int reconstructK = 5 * (k / 5);
                 while (reconstructK < k) {
                     updateSchedule(log.get(reconstructK));
                     reconstructK++;
@@ -71,6 +71,8 @@ public class Local {
 
             } catch (Exception i) {
                 init(siteId_);
+                sanity_check();
+                setTimer(2);
             }
         }
     }
@@ -115,7 +117,7 @@ public class Local {
     }
 
     public boolean checkValidity(Event e){
-        System.out.println("checking validity");
+//        System.out.println("checking validity");
         if (e.getOp().equals("schedule")) return !checkConflicts(e.getAppointment());
         else return checkExist(e.getAppointment());
     }
@@ -199,7 +201,7 @@ public class Local {
             }
         }
 
-        return Integer.toString(propose) +pos_i;
+        return Integer.toString(propose) + pos_i;
     }
 
     public void sanity_check() {
@@ -210,6 +212,11 @@ public class Local {
     }
 
     private void start_paxos(Event proposal) {
+        if (!checkValidity(proposal)) {
+            System.out.println("Unable to "+proposal.getOp()+ " meeting "
+                    +proposal.getAppointment().getName()+".");
+            return ;
+        }
         state = 1;
         count = 0;
         pVal = proposal;
@@ -227,6 +234,7 @@ public class Local {
     private void clearSite() {
         accVal = null;
         accNum = null;
+        maxPrepare = "0";
 //        pVal = null;
 //        pNum = null;
     }
@@ -244,7 +252,7 @@ public class Local {
             int port = Calendar.phonebook.get(msg.getSenderId())[1];
             // On receive prepare(m)
             if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 0) {
-                System.out.println("receiving prepare msg");
+//                System.out.println("receiving prepare msg");
                 if (mCompare(msg.getM(), maxPrepare) > 0) {
                     maxPrepare = msg.getM();
                     new Client(siteId).sendTo(msg.getSenderId(), port, new Message(
@@ -253,7 +261,7 @@ public class Local {
             }
             // On receive accept(accNum, accVal)
             else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 2) {
-                System.out.println("receiving accept msg");
+//                System.out.println("receiving accept msg");
                 if (mCompare(msg.getM(), maxPrepare) >= 0) {
                     maxPrepare = msg.getM();
                     accVal = msg.getV();
@@ -264,14 +272,14 @@ public class Local {
             }
             // On receive check maxK
             else {
-                System.out.println("receiving sanity-check msg");
+//                System.out.println("receiving sanity-check msg");
                 sendHolesVal(msg);
             }
         }
     }
 
     void message_handler(Message msg) {
-        System.out.println("new message: "+msg.getOp()+" from "+msg.getSenderId());
+//        System.out.println("new message: "+msg.getOp()+" from "+msg.getSenderId());
         if (msg.getV() != null && msg.getV().getK() > k) {
             if (accVal != null && msg.getV().getK() > accVal.getK()) clearSite();
             if (state != 6) {
@@ -287,14 +295,15 @@ public class Local {
         }
         // Learner: On receive commit(v)
         else if (msg.getV() != null && msg.getV().getK() >= k && msg.getOp() == 4) {
-            System.out.println("receiving commit msg");
+//            System.out.println("receiving commit msg");
             updateLog(msg.getV());
             clearSite();
-            winner = msg.getSenderId().equals(siteId);
+            winner = msg.getSenderId();
+
             // If it's the entry I am working on
             if (msg.getV().getK() == k-1) {
                 // TODO:Retry or unable
-                if (state != -1 && pVal != null && !msg.getV().equals(pVal)) {
+                if (state != -1 && pVal != null && !msg.getV().sameAs(pVal)) {
                     System.out.println("Unable to " + pVal.getOp() + " meeting " +
                             pVal.getAppointment().getName() + ".");
                 }
@@ -312,7 +321,7 @@ public class Local {
             count++;
             // Waiting for maxK messages (sanity checking)
             if (state == 6) {
-                System.out.println("receiving holesValue msg");
+//                System.out.println("receiving holesValue msg");
                 fixHoles(msg);
                 if (count >= Calendar.majority) {
                     timer.cancel();
@@ -321,8 +330,13 @@ public class Local {
                     else {
                         pVal = msg_set.remove();
                         pVal.setK(k);
-                        if (winner) accept_paxos();
+
+                        if (winner != null && winner.equals(siteId)) {
+                            pNum = "0";
+                            accept_paxos();
+                        }
                         else {
+                            pNum = prepareM();
                             start_paxos(pVal);
                             setTimer(2);
                         }
@@ -331,7 +345,7 @@ public class Local {
             }
             // Waiting for promise messages
             else if (state == 1) {
-                System.out.println("receiving promise msg");
+//                System.out.println("receiving promise msg");
                 // TODO：Retry or unable?
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
@@ -345,11 +359,10 @@ public class Local {
             }
             // Waiting for ack messages
             else if (state == 3 && count >= Calendar.majority) {
-                System.out.println("receiving ack msg");
+//                System.out.println("receiving ack msg");
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
                 clearSite();
-                winner = true;
                 if (!msg_set.isEmpty()) {
                     pVal = msg_set.remove();
                     pVal.setK(k);
@@ -365,10 +378,8 @@ public class Local {
         try {
             FileOutputStream saveFile = new FileOutputStream("checkpoint.sav");
             ObjectOutputStream save = new ObjectOutputStream(saveFile);
-
-            save.writeObject(k);
             save.writeObject(schedule);
-            save.writeObject(log);
+
             save.close();
         } catch (IOException i) {
             System.out.println("save checkpoint failed");
@@ -434,19 +445,20 @@ public class Local {
                 else if (state != -1) start_paxos(pVal);
             } else {
                 numRetries = 0;
-                clearSite();
-                state = -1;
-                timer.cancel();
-
                 if (state != 6) {
-                    System.out.println(362);
-                    System.out.println("Unable to " + pVal.getOp() + " meeting " +
+//                    System.out.println(440);
+                    System.out.println("450: Unable to " + pVal.getOp() + " meeting " +
                             pVal.getAppointment().getName() + ".");
                 }
                 if (!msg_set.isEmpty()) {
-                    sanity_check();
-                    setTimer(2);
+                    if (state == 6) start_paxos(msg_set.remove());
+                    else sanity_check();
+                } else {
+                    timer.cancel();
+                    clearSite();
+                    state = -1;
                 }
+
             }
         }
     }

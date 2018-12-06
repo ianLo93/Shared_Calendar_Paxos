@@ -14,12 +14,22 @@ public class Event implements Serializable {
         this.meeting = new Appointment(name, day, start, end, participants);
     }
 
+
     public String getOp() { return op; }
     public int getK() { return k; }
     public Appointment getAppointment() { return meeting; }
 
     public void setK(int k_) { this.k = k_; }
 
+    public boolean sameAs(Event e){
+        if (!this.op.equals(e.getOp())) return false;
+        if (this.op.equals("schedule")){
+            return this.equals(e);
+        }
+        else {
+            return this.getAppointment().getName().equals(e.getAppointment().getName());
+        }
+    }
     @Override
     public boolean equals(Object obj) {
         // checking if both the object references are
@@ -40,7 +50,9 @@ public class Event implements Serializable {
 
     @Override
     public String toString(){
-        String m = op + " "+meeting;
+        String m;
+        if (op.equals("schedule"))  m = op + " "+meeting;
+        else m = op + " " + meeting.getName();
         return m;
     }
 

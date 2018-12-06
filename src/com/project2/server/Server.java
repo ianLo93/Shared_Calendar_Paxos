@@ -62,9 +62,12 @@ public class Server extends Thread {
 //
                 if (recvMsg.getOp() == 7) {
                     if (recvMsg.getM() == null && recvMsg.getV() != null) {// proposal
-                        if (!local.checkValidity(recvMsg.getV()))
-                            System.out.println("Unable to"+recvMsg.getV().getOp()+"meeting"+
+
+                        if (!local.checkValidity(recvMsg.getV())){
+                            System.out.println("Unable to "+recvMsg.getV().getOp()+" meeting "+
                             recvMsg.getV().getAppointment().getName()+".");
+                            continue;
+                        }
                         if (local.state == -1){
                             local.sanity_check();
 ;                           local.setTimer(2);

@@ -53,21 +53,6 @@ public class Client {
             }
             return new Event(Local.k, cmds[0], cmds[1], null, null, null, null);
         }
-//        else if (cmds[0].equals("quit")) {
-//            if (cmds.length != 1) {
-//                System.out.println("ERROR: Invalid Exit Command");
-//                System.out.println("USAGE: quit");
-//                return null;
-//            }
-//            return null;
-//        } else if (cmds[0].equals("init")) {
-//            if (cmds.length != 1) {
-//                System.out.println("ERROR: Invalid Initialization Command");
-//                System.out.println("USAGE: init");
-//                return null;
-//            }
-//            return null;
-//        }
         else {
             System.out.println("ERROR: Invalid Command");
             System.out.println("USAGE: <command> [<meeting_info>]");

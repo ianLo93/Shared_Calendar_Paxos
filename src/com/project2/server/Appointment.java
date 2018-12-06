@@ -49,16 +49,13 @@ public class Appointment implements Serializable {
 
         // comparing the state of argument with
         // the state of 'this' Object.
-        return (a.name.equals(this.name) && a.day.equals(this.day) &&
-                a.start.equals(this.start) && a.end.equals(this.end) &&
-                Arrays.equals(a.participants, this.participants));
+        return (a.name.equals(this.name));
     }
 
     @Override
     public String toString(){
         StringBuilder m = new StringBuilder(name + " " + day+ " " + start + " " + end + " ");
         int i=0;
-        System.out.println(participants[i]);
         for (; i<participants.length-1; i++){
             m.append(participants[i]+",");
         }
