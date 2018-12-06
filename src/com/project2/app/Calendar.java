@@ -6,7 +6,6 @@ import java.io.*;
 
 import com.project2.client.Client;
 import com.project2.client.Message;
-import com.project2.server.Local;
 import com.project2.server.Server;
 import com.project2.server.Event;
 
