@@ -1,6 +1,5 @@
 package com.project2.server;
 
-import com.project2.client.Client;
 import com.project2.client.Message;
 
 import java.io.*;
@@ -49,17 +48,6 @@ public class Server extends Thread {
                 }
                 // Input stream close
                 objIn.close();
-//                System.out.println(recvMsg);
-
-//                if (!Local.checkValidity(proposal))
-//                    System.out.println("Unable to"+proposal.getOp()+"meeting"+
-//                            proposal.getAppointment().getName()+".");
-//                if (Local.state == -1) {
-//                    Local.sanity_check();
-//                    Local.setTimer(2);
-//                }
-//                Local.msg_set.add(proposal);
-//
                 if (recvMsg.getOp() == 7) {
                     if (recvMsg.getM() == null && recvMsg.getV() != null) {// proposal
 

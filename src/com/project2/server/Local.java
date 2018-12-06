@@ -28,21 +28,21 @@ public class Local {
     private int count;
     private int propose;
 
+    @SuppressWarnings("unchecked")
     public Local(String siteId_, boolean dummy) {
         if (!dummy) {
             try {
                 FileInputStream saveFile = new FileInputStream("state.sav");
                 ObjectInputStream restore = new ObjectInputStream(saveFile);
 
-                this.k = (Integer) restore.readObject();
-                this.log = (ArrayList<Event>) restore.readObject();
+                k = (Integer) restore.readObject();
+                log = (ArrayList<Event>) restore.readObject();
                 this.siteId = siteId_;
                 this.accNum = (String) restore.readObject();
                 this.accVal = (Event) restore.readObject();
                 this.maxPrepare = (String) restore.readObject();
                 this.propose = (Integer) restore.readObject();
 
-                // TODO: WRITE & READ ACCNUM, ACCVAL
                 restore.close();
                 System.out.println("Load state.sav");
                 System.out.println("k value: " + k);
@@ -52,7 +52,7 @@ public class Local {
                     saveFile = new FileInputStream("checkpoint.sav");
                     restore = new ObjectInputStream(saveFile);
 
-                    this.schedule = (ArrayList<Appointment>) restore.readObject();
+                    schedule = (ArrayList<Appointment>) restore.readObject();
                     restore.close();
 
 
@@ -78,7 +78,7 @@ public class Local {
     }
 
     // Helper functions
-    public void myView(){
+    void myView(){
         Collections.sort(schedule, Appointment.timeComparator);
         for (Appointment a : schedule) {
             for (String p : a.getParticipants()){
@@ -90,16 +90,16 @@ public class Local {
         }
     }
 
-    public void view(){
+    void view(){
         Collections.sort(schedule, Appointment.timeComparator);
         for (Appointment a : schedule) System.out.println(a);
     }
 
-    public void viewLog(){
+    void viewLog(){
         for (Event e : log) System.out.println(e);
     }
 
-    public void updateLog(Event e){
+    void updateLog(Event e){
         while (log.size() <= e.getK()) log.add(null);
         log.set(e.getK(), e);
         while (k < log.size() && log.get(k) != null) {
@@ -116,7 +116,7 @@ public class Local {
         }
     }
 
-    public boolean checkValidity(Event e){
+    boolean checkValidity(Event e){
 //        System.out.println("checking validity");
         if (e.getOp().equals("schedule")) return !checkConflicts(e.getAppointment());
         else return checkExist(e.getAppointment());
@@ -302,7 +302,6 @@ public class Local {
 
             // If it's the entry I am working on
             if (msg.getV().getK() == k-1) {
-                // TODO:Retry or unable
                 if (state != -1 && pVal != null && !msg.getV().sameAs(pVal)) {
                     System.out.println("Unable to " + pVal.getOp() + " meeting " +
                             pVal.getAppointment().getName() + ".");
@@ -356,11 +355,12 @@ public class Local {
                     setTimer(2);
                 }
             }
-            // Waiting for ack messages
+            // Waiting for ack messages greater than majority
             else if (state == 3 && count >= Calendar.majority) {
 //                System.out.println("receiving ack msg");
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
+                System.out.println("Meeting "+pVal.getAppointment().getName()+" "+pVal.getOp());
                 clearSite();
                 if (!msg_set.isEmpty()) {
                     pVal = msg_set.remove();
