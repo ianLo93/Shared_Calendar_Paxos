@@ -346,7 +346,6 @@ public class Local {
             // Waiting for promise messages
             else if (state == 1) {
 //                System.out.println("receiving promise msg");
-                // TODO：Retry or unable?
                 if (msg.getV() != null && !msg.getV().equals(pVal)) {
                     System.out.println("Unable to "+pVal.getOp()+" meeting "+pVal.getAppointment().getName()+".");
                     pVal = msg.getV();

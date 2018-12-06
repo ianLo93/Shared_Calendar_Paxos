@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c67bb4e1-2ae9-4972-9c07-d83905ffa15b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Appointment.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Appointment.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Event.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Event.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Acceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Acceptor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Timeout.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local$Timeout.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Local.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Shared_Calendar_Paxos/com/project2/server/Server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/project2/app/Calendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/app/Calendar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/project2/client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/project2/server/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Appointment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/project2/server/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Event.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/project2/server/Local.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Local.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/project2/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/project2/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/state.sav" beforeDir="false" afterPath="$PROJECT_DIR$/state.sav" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -77,8 +64,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="449" column="45" selection-start-line="449" selection-start-column="45" selection-end-line="449" selection-end-column="45" />
+            <state relative-caret-position="-1285">
+              <caret line="295" column="37" selection-start-line="295" selection-start-column="31" selection-end-line="295" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -229,7 +216,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544064780590" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544065136534" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Project" />
@@ -280,12 +267,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1544052644621</updated>
-      <workItem from="1544052646286" duration="9797000" />
+      <workItem from="1544052646286" duration="10218000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9797000" />
+    <option name="totallyTimeSpent" value="10218000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1388" height="877" extended-state="0" />
@@ -372,8 +359,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/project2/server/Local.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="449" column="45" selection-start-line="449" selection-start-column="45" selection-end-line="449" selection-end-column="45" />
+        <state relative-caret-position="-1285">
+          <caret line="295" column="37" selection-start-line="295" selection-start-column="31" selection-end-line="295" selection-end-column="37" />
         </state>
       </provider>
     </entry>
