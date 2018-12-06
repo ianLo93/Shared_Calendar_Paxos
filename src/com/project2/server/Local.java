@@ -357,7 +357,14 @@ public class Local {
 //                System.out.println("receiving ack msg");
                 timer.cancel();
                 new Client(siteId).bcast(4, pNum, pVal);
+<<<<<<< HEAD
                 System.out.println("Meeting "+pVal.getAppointment().getName()+" "+pVal.getOp()+"ed.");
+=======
+                if (pVal.getOp().equals("schedule"))
+                    System.out.println("Meeting "+pVal.getAppointment().getName()+" scheduled.");
+                else System.out.println("Meeting "+pVal.getAppointment().getName()+" cancelled.");
+                state = -1;
+>>>>>>> c1bcb1a122a5586215101de74e050d819e5bdc2c
                 clearSite();
                 state = -1;
                 if (!msg_set.isEmpty()) {
